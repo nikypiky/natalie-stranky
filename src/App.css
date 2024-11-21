@@ -1,4 +1,6 @@
-body {
+html, body {
+  margin: 0;
+  padding: 0;
   background-color:#282c34
 }
 
@@ -6,7 +8,8 @@ body {
   text-align: center;
 }
 
-.header {
+#header {
   background-color: red;
-  columns: white;
+  color: white;
+  width: 100%;
 }
