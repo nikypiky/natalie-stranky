@@ -1,21 +1,17 @@
-	import './App.css';
-	import Container from "@mui/material/Container"
+import './App.css';
 import Header from './components/Header';
-	// import { Box } from '@mui/material';
+import { Box } from '@mui/material';
 
 
-	function App() {
-		return (
-			<>
-				<Container sx={{ bgcolor: 'blue' }} display="flex" maxWidth={false} disableGutters>
-					{/* <div id='header'> */}
-						{/* <p>Test</p> */}
-						<Header />
-					{/* </div> */}
-					<p>test</p>
-				</Container>
-			</>
-		)
-	}
+function App() {
+	return (
+		<>
+			<Box>
+				<Header />
+				<p>test</p>
+			</Box>
+		</>
+	)
+}
 
-	export default App;
+export default App;
