@@ -10,3 +10,7 @@ html, body {
   height: 100%;
   font-family: sans-serif;
 }
+
+.slider-image {
+	max-width: 100%;
+}

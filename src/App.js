@@ -1,6 +1,7 @@
 import './App.css';
 import Header from './components/Header';
 import { Box } from '@mui/material';
+import ImageSlider from './components/ImageSlider';
 
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
 		<>
 			<Box>
 				<Header />
-				<p>test</p>
+				<ImageSlider/>
 			</Box>
 		</>
 	)
