@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box; /* Prevents padding from affecting element size */
-}
+} */
 
 html, body {
   width: 100%;
@@ -12,5 +12,5 @@ html, body {
 }
 
 .slider-image {
-	max-width: 100%;
+	width: 100vw;
 }
