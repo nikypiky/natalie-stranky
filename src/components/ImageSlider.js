@@ -15,11 +15,16 @@ export default function ImageSlider(props) {
 
 function Item(props) {
 	return (
-		<div>
-			<img className="slider-image" src={props.image} alt={'image no. ' + props.key} />
-		</div>
-	)
-}
+	  <div
+		className="slider-image"
+		style={{ backgroundImage: `url(${props.image})`,
+				 backgroundSize: 'contain', /* Ensures the image covers the whole area */
+				 backgroundPosition: 'center' /* Centers the image */
+			   }}
+	  >
+	  </div>
+	);
+  }
 
 // export default function ImageSlider(props) {
 // 	return (
