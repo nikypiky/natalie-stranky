@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, IconButton, List, ListItem, ListItemText, Drawer, Typography } from "@mui/material";
+import {IconButton, List, ListItem, ListItemText, Drawer } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -25,38 +25,59 @@ const FullWidthDropdownMenu = ({ menuItems }) => {
         sx={{
           "& .MuiDrawer-paper": {
             width: "100vw",
-            maxHeight: "50vh", // Open menu below the button and limit height
+            height: "100vh",
             bgcolor: "black",
             color: "white",
-            borderTop: "1px solid white", // Optional border styling
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
           },
         }}
       >
-        <Box
+        {/* Close Button */}
+        <IconButton
           sx={{
+            color: "white",
+            position: "absolute",
+            top: 16,
+            right: 16,
+          }}
+          onClick={toggleDrawer(false)}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {/* Centered Menu Items */}
+        <List
+          sx={{
+            width: "100%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            pt: 2,
+            alignItems: "center", // Horizontal centering
+            gap: 2, // Adds spacing between items
           }}
         >
-          {/* Close Button */}
-          <IconButton
-            sx={{ color: "white", alignSelf: "flex-end", mr: 2 }}
-            onClick={toggleDrawer(false)}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          {/* Menu Items */}
-          <List sx={{ textAlign: "center", width: "100%" }}>
-            {menuItems.map((item, index) => (
-              <ListItem button key={index} onClick={toggleDrawer(false)}>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+          {menuItems.map((item, index) => (
+            <ListItem
+              key={index}
+              sx={{
+                justifyContent: "center", // Centers the text horizontally
+                width: "100%", // Ensures full-width clickable area
+                textAlign: "center", // Ensures text alignment
+              }}
+              button
+              onClick={toggleDrawer(false)}
+            >
+              <ListItemText
+                primary={item}
+                primaryTypographyProps={{
+                  variant: "h6", // Makes the text larger for better visibility
+                }}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Drawer>
     </>
   );

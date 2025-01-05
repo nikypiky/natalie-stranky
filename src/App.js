@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 // import ImageSlider from './components/ImageSlider';
 import AboutCard from './components/AboutCard';
 import Calendar from './components/Calendar';
+import Reservation from './components/Reservation';
 
 
 function App() {
@@ -13,7 +14,8 @@ function App() {
 				<Header />
 				{/* <ImageSlider/> */}
 				<AboutCard/>
-				<Calendar/>	
+				<Calendar/>
+				<Reservation/>
 			</Box>
 		</>
 	)
