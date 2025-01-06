@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import Login from "./Login";
 
 export default function AdminPage() {
 	return (
-		<Typography>test</Typography>
+		<Login/>
 	)
 }

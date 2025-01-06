@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash
 import sqlite3
 
+
 db_path = "reservations.db"
 
 def run_sql(script, values=0):

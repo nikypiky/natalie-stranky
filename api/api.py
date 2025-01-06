@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import sqlite3
-
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 
@@ -27,6 +27,5 @@ def run_sql(script, values=0):
 
 @app.route("/login", methods=["GET, POST"])
 def login():
-	data = request.get_json()
+    data = request.get_json()
     print(data)
-
