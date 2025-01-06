@@ -1,14 +1,7 @@
-from flask import Flask, request, jsonify
+from werkzeug.security import generate_password_hash
 import sqlite3
 
-
-app = Flask(__name__)
-
-# secret key for cookies
-app.secret_key = "test"
-
 db_path = "reservations.db"
-
 
 def run_sql(script, values=0):
     connection = sqlite3.connect(db_path)
@@ -24,9 +17,9 @@ def run_sql(script, values=0):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def create_user():
+	username = input("Enter username: ")
+	password = generate_password_hash(input("Enter password: "))
+	run_sql("INSERT INTO login (username, password) VALUES (?,?)",(username, password))
 
-@app.route("/login", methods=["GET, POST"])
-def login():
-	data = request.get_json()
-    print(data)
-
+create_user()
