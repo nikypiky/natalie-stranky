@@ -1,24 +1,18 @@
 import './App.css';
-import Header from './components/Header';
-import { Box } from '@mui/material';
-// import ImageSlider from './components/ImageSlider';
-import AboutCard from './components/AboutCard';
-import Calendar from './components/Calendar';
-import Reservation from './components/Reservation';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import UserPage from './components/userPage/UserPage';
+import AdminPage from './components/adminPage/AdminPage';
 
 
 function App() {
 	return (
-		<>
-			<Box>
-				<Header />
-				{/* <ImageSlider/> */}
-				<AboutCard/>
-				<Calendar/>
-				<Reservation/>
-			</Box>
-		</>
+		<BrowserRouter>
+			<Routes>
+				<Route path='/' element={<UserPage />} />
+				<Route path='/admin' element={<AdminPage />} />
+			</Routes>
+		</BrowserRouter>
 	)
 }
 
-export default App;
+export default App

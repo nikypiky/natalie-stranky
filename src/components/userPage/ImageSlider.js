@@ -1,6 +1,6 @@
 import Carousel from "react-material-ui-carousel";
 
-const images = require.context("../photos", true);
+const images = require.context("../../photos", true);
 const imageList = images.keys().map(image => images(image));
 
 export default function ImageSlider(props) {

@@ -1,7 +1,7 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 
-const images = require.context("../photos", true);
+const images = require.context("../../photos", true);
 const imageList = images.keys().map(image => images(image));
 
 const AboutCard = ({ title = "TEXT", text }) => {
