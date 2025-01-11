@@ -21,7 +21,6 @@ export default function Login() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(JSON.stringify(login))
 		fetch("/login", {
 			method: "POST",
 			headers: {
@@ -29,7 +28,6 @@ export default function Login() {
 			},
 			body: JSON.stringify(login)
 		})
-			.then(console.log(JSON.stringify(login)))
 			.then(response => {
 				console.log("Response status:", response.status);
 				//create a error message that can be use by .catch
@@ -38,7 +36,6 @@ export default function Login() {
 						throw new Error(err.message || "HTTP error! Statuss: " + response.status);
 					});
 				}
-				console.log(response.json())
 				return response.json();
 			})
 			.then(data => {
@@ -46,7 +43,7 @@ export default function Login() {
 				// Handle success (e.g., save token, redirect, etc.)
 			})
 			.catch(error => {
-				console.log("Errorss:", error.message);
+				console.log("Errors:", error.message);
 				// Handle error (e.g., show error message)
 			});
 	};
