@@ -25,7 +25,9 @@ def run_sql(script, values=0):
         print(f"An error occurred: {e}")
 
 
-@app.route("/login", methods=["GET, POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    data = request.get_json()
-    print(data)
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+    return (jsonify(response=1))

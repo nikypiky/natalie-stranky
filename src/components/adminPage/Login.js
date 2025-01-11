@@ -16,12 +16,41 @@ export default function Login() {
 			...login,
 			[name]: value,
 		})
+		console.log(JSON.stringify(login))
 	};
 
-	const handleSubmit = (ev) => {
-		ev.preventDefault();
-		alert('Your username is: ' + login.username + login.password)
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		console.log(JSON.stringify(login))
+		fetch("/login", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(login)
+		})
+			.then(console.log(JSON.stringify(login)))
+			.then(response => {
+				console.log("Response status:", response.status);
+				//create a error message that can be use by .catch
+				if (!response.ok) {
+					return response.json().then(err => {
+						throw new Error(err.message || "HTTP error! Statuss: " + response.status);
+					});
+				}
+				console.log(response.json())
+				return response.json();
+			})
+			.then(data => {
+				console.log("Success:", data);
+				// Handle success (e.g., save token, redirect, etc.)
+			})
+			.catch(error => {
+				console.log("Errorss:", error.message);
+				// Handle error (e.g., show error message)
+			});
 	};
+
 
 	return (
 		<>
