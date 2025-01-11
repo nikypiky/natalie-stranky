@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import sqlite3
 from werkzeug.security import check_password_hash
 import json
@@ -33,10 +33,10 @@ def login():
     password = run_sql("""SELECT password
                           FROM login
                           WHERE username = ?""",
-                          (user_input["username"],))
-    print(password[0][0])
-    if check_password_hash(password[0][0], user_input["password"]) == True:
-        print("correct")
+                       (user_input["username"],))
+    if not password:
+        return make_response(jsonify({"login": "incorrect username"}))
+    if check_password_hash(password[0][0], user_input["password"]):
+        return make_response(jsonify({"login": "correct"}))
     else:
-        print("false")
-    return (jsonify(response=1))
+        return make_response(jsonify({"login": "incorrect password"}))

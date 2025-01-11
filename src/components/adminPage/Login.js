@@ -16,7 +16,6 @@ export default function Login() {
 			...login,
 			[name]: value,
 		})
-		console.log(JSON.stringify(login))
 	};
 
 	const handleSubmit = (event) => {
@@ -39,8 +38,13 @@ export default function Login() {
 				return response.json();
 			})
 			.then(data => {
-				console.log("Success:", data);
-				// Handle success (e.g., save token, redirect, etc.)
+				console.log("Success:", data.login);
+				if (data.login !== "correct") {
+					console.log("test incorrect")
+				} else {
+					console.log("test correct")
+				}
+
 			})
 			.catch(error => {
 				console.log("Errors:", error.message);
@@ -63,8 +67,8 @@ export default function Login() {
 				onChange={handleOnChange}
 			>
 				<p style={{ textAlign: 'center', marginBottom: 20 }}>Login</p>
-				<TextField name="username" label='Username' onChange={handleOnChange}/>
-				<TextField name="password" label='Password' onChange={handleOnChange}/>
+				<TextField name="username" label='Username' onChange={handleOnChange} />
+				<TextField name="password" label='Password' onChange={handleOnChange} />
 				<Button variant="contained" type='submit'>Submit</Button>
 			</Box>
 			{/* <form onSubmit={onSubmit}>
