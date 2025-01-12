@@ -5,6 +5,8 @@ import Dashboard from "./Dashboard";
 
 export default function Login() {
 
+	const [sessionToken, setSessionToken] = useState();
+
 	// define state values for login input
 	const [login, setLogin] = useState({
 		username: "",
@@ -19,6 +21,7 @@ export default function Login() {
 		})
 	};
 
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		//send data to server
@@ -29,28 +32,50 @@ export default function Login() {
 			},
 			body: JSON.stringify(login)
 		})
-		//process recieved data
+			//process recieved data
 			.then(response => {
-				console.log("Response status:", response.status);
+				console.log("Login response statuss:", response.status);
 				//create a error message that can be use by .catch
-				console.log("Login status cookie:", document.cookie)
 				if (!response.ok) {
-						throw new Error(response.status);
+					throw new Error(response.status);
 				}
-				return response.text();
 			})
-			.then(data => {
-				console.log("Success:", data);
+			.then(() => {
+				setSessionToken(document.cookie
+					.split('; ')
+					.find(row => row.startsWith('session_token='))
+					?.split('=')[1])
+				console.log(sessionToken)
+			})
+			.catch(error => {
+				console.log("Errors:", error.message);
+				// Handle error (e.g., show error message)
+			});
+	};
+
+	if (sessionToken) {
+		fetch("/verify_session", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ 'sessionToken': sessionToken })
+		})
+			.then(response => {
+				console.log("Session response status:", response.status);
+				if (!response.ok) {
+					throw new Error(response.status)
+				}
+			})
+			.then(() => {
 				return (
-					<Dashboard/>
+					<Dashboard />
 				)
 			})
 			.catch(error => {
 				console.log("Errors:", error.message);
-				console.log("error cookie:", error.cookie)
-				// Handle error (e.g., show error message)
-			});
-	};
+			})
+	}
 
 
 	return (

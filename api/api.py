@@ -37,7 +37,7 @@ def login():
                        (user_input["username"],))
     response = make_response()
     if not password:
-        response.set_cookie("login", "incorrect username")
+        # response.set_cookie("login", "incorrect username")
         return response, 400
     if check_password_hash(password[0][0], user_input["password"]):
         session_token = secrets.token_hex(16)
@@ -45,6 +45,23 @@ def login():
         response.set_cookie("session_token", session_token)
         return response
     else:
-        response.set_cookie("login", "incorrect password")
+        # response.set_cookie("login", "incorrect password")
         return response, 401
 
+@app.route("/verify_session", methods=["GET", "POST"])
+def verify_session():
+    user_input = request.get_json()
+    verification = run_sql("""SELECT *
+                           FROM session
+                           WHERE session = ?""",
+                           (user_input["sessionToken"],))
+
+    print(user_input)
+    print(verification)
+    response = make_response()
+    if not verification:
+        response.set_cookie('sesion_token', '', expores=0) #clear token if incorrect
+        return response, 402
+    else:
+        return response, 250
+    return response, 250
