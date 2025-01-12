@@ -36,13 +36,15 @@ def login():
                           WHERE username = ?""",
                        (user_input["username"],))
     response = make_response()
-    session_token = secrets.token_hex(16)
     if not password:
         response.set_cookie("login", "incorrect username")
         return response, 400
     if check_password_hash(password[0][0], user_input["password"]):
-        response.set_cookie("login", "correct")
+        session_token = secrets.token_hex(16)
+        run_sql("INSERT INTO session (session) VALUES (?)", (session_token,))
+        response.set_cookie("session_token", session_token)
         return response
     else:
         response.set_cookie("login", "incorrect password")
         return response, 401
+

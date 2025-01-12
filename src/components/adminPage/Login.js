@@ -1,6 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 // import { useField } from "@mui/x-date-pickers/internals";
 import { useState } from 'react';
+import Dashboard from "./Dashboard";
 
 export default function Login() {
 
@@ -40,6 +41,9 @@ export default function Login() {
 			})
 			.then(data => {
 				console.log("Success:", data);
+				return (
+					<Dashboard/>
+				)
 			})
 			.catch(error => {
 				console.log("Errors:", error.message);
@@ -72,3 +76,4 @@ export default function Login() {
 			</form> */}
 		</>);
 }
+
