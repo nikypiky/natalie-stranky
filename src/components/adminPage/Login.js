@@ -20,6 +20,7 @@ export default function Login() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		//send data to server
 		fetch("/login", {
 			method: "POST",
 			headers: {
@@ -27,27 +28,22 @@ export default function Login() {
 			},
 			body: JSON.stringify(login)
 		})
+		//process recieved data
 			.then(response => {
 				console.log("Response status:", response.status);
 				//create a error message that can be use by .catch
+				console.log("Login status cookie:", document.cookie)
 				if (!response.ok) {
-					return response.json().then(err => {
-						throw new Error(err.message || "HTTP error! Statuss: " + response.status);
-					});
+						throw new Error(response.status);
 				}
-				return response.json();
+				return response.text();
 			})
 			.then(data => {
-				console.log("Success:", data.login);
-				if (data.login !== "correct") {
-					console.log("test incorrect")
-				} else {
-					console.log("test correct")
-				}
-
+				console.log("Success:", data);
 			})
 			.catch(error => {
 				console.log("Errors:", error.message);
+				console.log("error cookie:", error.cookie)
 				// Handle error (e.g., show error message)
 			});
 	};

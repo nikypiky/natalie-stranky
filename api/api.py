@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 import sqlite3
 from werkzeug.security import check_password_hash
 import json
+import secrets
 
 app = Flask(__name__)
 
@@ -34,9 +35,14 @@ def login():
                           FROM login
                           WHERE username = ?""",
                        (user_input["username"],))
+    response = make_response()
+    session_token = secrets.token_hex(16)
     if not password:
-        return make_response(jsonify({"login": "incorrect username"}))
+        response.set_cookie("login", "incorrect username")
+        return response, 400
     if check_password_hash(password[0][0], user_input["password"]):
-        return make_response(jsonify({"login": "correct"}))
+        response.set_cookie("login", "correct")
+        return response
     else:
-        return make_response(jsonify({"login": "incorrect password"}))
+        response.set_cookie("login", "incorrect password")
+        return response, 401
