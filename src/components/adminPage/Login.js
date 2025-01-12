@@ -45,7 +45,7 @@ export default function Login() {
 					.split('; ')
 					.find(row => row.startsWith('session_token='))
 					?.split('=')[1])
-				console.log(sessionToken)
+				console.log('test', sessionToken)
 			})
 			.catch(error => {
 				console.log("Errors:", error.message);
@@ -54,27 +54,9 @@ export default function Login() {
 	};
 
 	if (sessionToken) {
-		fetch("/verify_session", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ 'sessionToken': sessionToken })
-		})
-			.then(response => {
-				console.log("Session response status:", response.status);
-				if (!response.ok) {
-					throw new Error(response.status)
-				}
-			})
-			.then(() => {
-				return (
-					<Dashboard />
-				)
-			})
-			.catch(error => {
-				console.log("Errors:", error.message);
-			})
+		return (
+			<Dashboard/>
+		)
 	}
 
 

@@ -55,8 +55,7 @@ def verify_session():
                            FROM session
                            WHERE session = ?""",
                            (user_input["sessionToken"],))
-
-    print(user_input)
+    print("verification")
     print(verification)
     response = make_response()
     if not verification:
@@ -64,4 +63,3 @@ def verify_session():
         return response, 402
     else:
         return response, 250
-    return response, 250
