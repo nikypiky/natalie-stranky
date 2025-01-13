@@ -48,18 +48,20 @@ def login():
         # response.set_cookie("login", "incorrect password")
         return response, 401
 
+
 @app.route("/verify_session", methods=["GET", "POST"])
 def verify_session():
     user_input = request.get_json()
-    verification = run_sql("""SELECT *
-                           FROM session
-                           WHERE session = ?""",
-                           (user_input["sessionToken"],))
-    print("verification")
-    print(verification)
+    # to bypass errors when sessionToken not yet initialised
+    try:
+        verification = run_sql("""SELECT *
+                               FROM session
+                               WHERE session = ?""",
+                               (user_input["sessionToken"],))
+    except:
+        verification = 0
     response = make_response()
     if not verification:
-        response.set_cookie('sesion_token', '', expores=0) #clear token if incorrect
         return response, 402
     else:
         return response, 250

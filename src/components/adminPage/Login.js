@@ -3,7 +3,7 @@ import { Box, Button, TextField } from "@mui/material";
 import { useState } from 'react';
 import Dashboard from "./Dashboard";
 
-export default function Login() {
+export default function Login(props) {
 
 	const [sessionToken, setSessionToken] = useState();
 
@@ -20,7 +20,6 @@ export default function Login() {
 			[name]: value,
 		})
 	};
-
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -55,10 +54,9 @@ export default function Login() {
 
 	if (sessionToken) {
 		return (
-			<Dashboard/>
+			<Dashboard />
 		)
 	}
-
 
 	return (
 		<>
@@ -77,10 +75,8 @@ export default function Login() {
 				<TextField name="username" label='Username' onChange={handleOnChange} />
 				<TextField name="password" label='Password' onChange={handleOnChange} />
 				<Button variant="contained" type='submit'>Submit</Button>
+				<p style={{ textAlign: 'center', marginBottom: 20 , color: "red"}}> {props.error} </p>
 			</Box>
-			{/* <form onSubmit={onSubmit}>
-				<input type="text" ref={usernameField} />
-			</form> */}
 		</>);
 }
 
