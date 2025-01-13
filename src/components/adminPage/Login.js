@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 export default function Login(props) {
 
 	const [sessionToken, setSessionToken] = useState();
+	const [loginError, setLoginError] = useState();
 
 	// define state values for login input
 	const [login, setLogin] = useState({
@@ -47,10 +48,26 @@ export default function Login(props) {
 				console.log('test', sessionToken)
 			})
 			.catch(error => {
-				console.log("Errors:", error.message);
+				console.log("Errors:", String(error.message));
+				setLoginError(String(error.message))
+				console.log('test', loginError)
 				// Handle error (e.g., show error message)
 			});
 	};
+
+	if (loginError) {
+		console.log("test ", loginError)
+		if (loginError === '400') {
+			return (
+				<Login error="Invalid username."/>
+			)
+		}
+		if (loginError === '401') {
+			return (
+				<Login error="Invalid password."/>
+			)
+		}
+	}
 
 	if (sessionToken) {
 		return (
@@ -75,7 +92,7 @@ export default function Login(props) {
 				<TextField name="username" label='Username' onChange={handleOnChange} />
 				<TextField name="password" label='Password' onChange={handleOnChange} />
 				<Button variant="contained" type='submit'>Submit</Button>
-				<p style={{ textAlign: 'center', marginBottom: 20 , color: "red"}}> {props.error} </p>
+				<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{props.error} </p>
 			</Box>
 		</>);
 }
