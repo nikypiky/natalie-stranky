@@ -10,10 +10,17 @@ import { useState, useEffect } from 'react';
 
 export default function BirthdayTable() {
 
+	useEffect(() => {
+		fetch("/get_reservations")
+			.then(response => {
+				console.log('test', response)
+			})
+	})
+
 	return (
 		<div className='table'>
-			<TableContainer component={Paper} sx={{maxWidth: '90vw', display: 'flex', justifyContent: 'center', alignItems: "center"}}>
-				<Table  aria-label="simple table">
+			<TableContainer component={Paper} sx={{ maxWidth: '90vw', display: 'flex', justifyContent: 'center', alignItems: "center" }}>
+				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell>Name</TableCell>
@@ -23,10 +30,10 @@ export default function BirthdayTable() {
 					</TableHead>
 					<TableBody>
 						{/* {birthdays.map((row) => ( */}
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-							</TableRow>
+						<TableRow>
+							<TableCell></TableCell>
+							<TableCell></TableCell>
+						</TableRow>
 						{/* ))} */}
 					</TableBody>
 				</Table>
