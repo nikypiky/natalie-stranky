@@ -51,13 +51,13 @@ def login():
 
 @app.route("/verify_session", methods=["GET", "POST"])
 def verify_session():
-    user_input = request.get_json()
+    cookie = request.cookies.get('session_token')
     # to bypass errors when sessionToken not yet initialised
     try:
         verification = run_sql("""SELECT *
                                FROM session
                                WHERE session = ?""",
-                               (user_input["sessionToken"],))
+                               (cookie,))
     except:
         verification = 0
     response = make_response()
@@ -65,6 +65,3 @@ def verify_session():
         return response, 402
     else:
         return response, 250
-
-
-

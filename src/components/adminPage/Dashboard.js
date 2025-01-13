@@ -9,21 +9,6 @@ import Paper from '@mui/material/Paper';
 import { useState, useEffect } from 'react';
 
 export default function BirthdayTable() {
-	const [birthdays, setBirthdays] = useState([]);
-
-	useEffect(() => {
-		// Fetch birthdays from the API
-		fetch('/birthdays')
-		  .then((res) => res.json())
-		  .then((data) => {
-			// Set the received data into the state
-			setBirthdays(data);
-		  })
-		  .catch((error) => {
-			console.error('Error fetching birthdays:', error);
-		  });
-	  }, []); // The empty dependency array ensures this runs only once when the component mounts
-
 
 	return (
 		<div className='table'>
@@ -37,12 +22,12 @@ export default function BirthdayTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{birthdays.map((row) => (
+						{/* {birthdays.map((row) => ( */}
 							<TableRow>
-								<TableCell>{row.name}</TableCell>
-								<TableCell>{row.date}</TableCell>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
 							</TableRow>
-						))}
+						{/* ))} */}
 					</TableBody>
 				</Table>
 			</TableContainer>
