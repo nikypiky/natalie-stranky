@@ -70,8 +70,9 @@ def verify_session(session_token=0):
 @app.route("/get_reservations", methods=["GET", "POST"])
 def get_reservations():
     response = make_response()
-    if verify_session(request.cookies.get('session_token')) != 250:
-        print("test")
+    foo, status_code = verify_session()
+    print (status_code)
+    if status_code != 250:
         return response, 404
     reservations = run_sql("SELECT * FROM reservations")
     return jsonify(reservations)
