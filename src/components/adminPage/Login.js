@@ -3,9 +3,10 @@ import { Box, Button, TextField } from "@mui/material";
 import { useState } from 'react';
 import Dashboard from "./Dashboard";
 
-export default function Login(props) {
+export default function Login() {
 
 	const [sessionToken, setSessionToken] = useState();
+
 	const [loginError, setLoginError] = useState();
 
 	// define state values for login input
@@ -45,29 +46,21 @@ export default function Login(props) {
 					.split('; ')
 					.find(row => row.startsWith('session_token='))
 					?.split('=')[1])
-				console.log('test', sessionToken)
 			})
 			.catch(error => {
 				console.log("Errors:", String(error.message));
-				setLoginError(String(error.message))
+				let error_message
+				if (error.message === '400') {
+					error_message = "Invalid username"
+				}
+				if (error.message === '401') {
+					error_message = "Invalid password"
+				}
+				setLoginError(error_message);
 				console.log('test', loginError)
 				// Handle error (e.g., show error message)
 			});
 	};
-
-	if (loginError) {
-		console.log("test ", loginError)
-		if (loginError === '400') {
-			return (
-				<Login error="Invalid username."/>
-			)
-		}
-		if (loginError === '401') {
-			return (
-				<Login error="Invalid password."/>
-			)
-		}
-	}
 
 	if (sessionToken) {
 		return (
@@ -92,7 +85,7 @@ export default function Login(props) {
 				<TextField name="username" label='Username' onChange={handleOnChange} />
 				<TextField name="password" label='Password' onChange={handleOnChange} />
 				<Button variant="contained" type='submit'>Submit</Button>
-				<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{props.error} </p>
+				<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{loginError} </p>
 			</Box>
 		</>);
 }
