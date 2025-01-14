@@ -76,16 +76,13 @@ def get_reservations():
         return response, 404
     data = run_sql("SELECT * FROM reservations")
     reservations = []
-    # print (data[0][1])
-    for reservation in data:
-        print("test test test test test test")
-        print(reservation)
-        reservations ={}
-        reservations["name"] = reservation[1]
-        reservations["email"] = reservation[2]
-        reservations["phone"] = reservation[3]
-        reservations["time"] = reservation[4]
-        reservations["typ"] = reservation[5]
-        reservations["notes"] = reservation[6]
-    # print (reservations)
+    for i in data:
+        reservation ={}
+        reservation["name"] = i[1]
+        reservation["email"] = i[2]
+        reservation["phone"] = i[3]
+        reservation["time"] = i[4]
+        reservation["typ"] = i[5]
+        reservation["notes"] = i[6]
+        reservations.append(reservation)
     return jsonify(reservations)
