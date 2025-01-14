@@ -74,7 +74,7 @@ def get_reservations():
     print (status_code)
     if status_code != 250:
         return response, 404
-    data = run_sql("SELECT * FROM reservations")
+    data = run_sql("SELECT * FROM reservations ")
     reservations = []
     for i in data:
         reservation ={}
@@ -82,7 +82,7 @@ def get_reservations():
         reservation["email"] = i[2]
         reservation["phone"] = i[3]
         reservation["time"] = i[4]
-        reservation["typ"] = i[5]
+        reservation["type"] = i[5]
         reservation["notes"] = i[6]
         reservations.append(reservation)
     return jsonify(reservations)

@@ -39,17 +39,24 @@ export default function BirthdayTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell>Name</TableCell>
-							<TableCell>Birthday</TableCell>
-							<TableCell>Delete Birthday</TableCell>
+							<TableCell>E-mail</TableCell>
+							<TableCell>Phone</TableCell>
+							<TableCell>Time</TableCell>
+							<TableCell>Type</TableCell>
+							<TableCell>Notes</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{/* {birthdays.map((row) => ( */}
+						{reservations.map((row) => (
 						<TableRow>
-							<TableCell></TableCell>
-							<TableCell></TableCell>
+							<TableCell>{row.name}</TableCell>
+							<TableCell>{row.email}</TableCell>
+							<TableCell>{row.phone}</TableCell>
+							<TableCell>{row.time}</TableCell>
+							<TableCell>{row.type}</TableCell>
+							<TableCell>{row.notes}</TableCell>
 						</TableRow>
-						{/* ))} */}
+						))}
 					</TableBody>
 				</Table>
 			</TableContainer>
