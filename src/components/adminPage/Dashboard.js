@@ -10,12 +10,27 @@ import { useState, useEffect } from 'react';
 
 export default function BirthdayTable() {
 
+	const [reservations, setReservations] = useState([]);
+
 	useEffect(() => {
-		fetch("/get_reservations")
-			.then(response => {
-				console.log('test', response)
-			})
-	})
+	  fetch("/get_reservations")
+		.then((response) => {
+		  if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		  }
+		  return response.json();
+		})
+		.then((data) => {
+		  setReservations(data);
+		})
+		.catch((error) => {
+		  console.error("Error fetching reservations: ", error); // Log any errors
+		});
+	}, []);
+
+	if (res) {
+		console.log("res: ", reservations)
+	}
 
 	return (
 		<div className='table'>
