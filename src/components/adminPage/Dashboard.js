@@ -24,11 +24,11 @@ export default function BirthdayTable() {
 		  setReservations(data);
 		})
 		.catch((error) => {
-		  console.error("Error fetching reservations: ", error); // Log any errors
+		  console.error("Error fetching reservations: ", error);
 		});
 	}, []);
 
-	if (res) {
+	if (reservations) {
 		console.log("res: ", reservations)
 	}
 

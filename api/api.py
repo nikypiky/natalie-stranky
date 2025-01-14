@@ -74,5 +74,18 @@ def get_reservations():
     print (status_code)
     if status_code != 250:
         return response, 404
-    reservations = run_sql("SELECT * FROM reservations")
+    data = run_sql("SELECT * FROM reservations")
+    reservations = []
+    # print (data[0][1])
+    for reservation in data:
+        print("test test test test test test")
+        print(reservation)
+        reservations ={}
+        reservations["name"] = reservation[1]
+        reservations["email"] = reservation[2]
+        reservations["phone"] = reservation[3]
+        reservations["time"] = reservation[4]
+        reservations["typ"] = reservation[5]
+        reservations["notes"] = reservation[6]
+    # print (reservations)
     return jsonify(reservations)
