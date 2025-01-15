@@ -78,6 +78,7 @@ def get_reservations():
     reservations = []
     for i in data:
         reservation ={}
+        reservation["id"] = i[0]
         reservation["name"] = i[1]
         reservation["email"] = i[2]
         reservation["phone"] = i[3]
