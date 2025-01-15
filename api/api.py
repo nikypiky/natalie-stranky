@@ -74,7 +74,7 @@ def get_reservations():
     print (status_code)
     if status_code != 250:
         return response, 404
-    data = run_sql("SELECT * FROM reservations ")
+    data = run_sql("SELECT * FROM reservations ORDER BY time_of_reservation")
     reservations = []
     for i in data:
         reservation ={}
