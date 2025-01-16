@@ -57,8 +57,6 @@ export default function Login() {
 					error_message = "Invalid password"
 				}
 				setLoginError(error_message);
-				console.log('test', loginError)
-				// Handle error (e.g., show error message)
 			});
 	};
 

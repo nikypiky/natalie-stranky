@@ -71,7 +71,6 @@ def verify_session(session_token=0):
 def get_reservations():
     response = make_response()
     foo, status_code = verify_session()
-    print (status_code)
     if status_code != 250:
         return response, 404
     data = run_sql("SELECT * FROM reservations ORDER BY time_of_reservation")
@@ -87,3 +86,15 @@ def get_reservations():
         reservation["notes"] = i[6]
         reservations.append(reservation)
     return jsonify(reservations)
+
+@app.route("/add_free_dates", methods=["GET", "POST"])
+def add_free_dates():
+    response = make_response()
+    foo, status_code = verify_session()
+    if status_code != 250:
+        return response, 404
+    user_input = request.get_json()
+    for i in user_input:
+        print (user_input[i])
+    return response
+
