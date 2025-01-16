@@ -1,33 +1,26 @@
-import { TimePicker, DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { DateTimePicker, DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, Button } from "@mui/material";
 import { useState } from 'react';
 import dayjs from "dayjs";
 
-const today = dayjs()
+const today = dayjs().hour()
 
 export default function AddFreeDates() {
 
-	// const [freeDate, setFreeDate] = useState(dayjs())
 	const [freeDate, setFreeDate] = useState({
-		date: null,
-		start: "",
-		end: "",
+		start: null,
+		end: null,
 	})
 
 	const [error, setError] = useState("")
 
-	const onDateChange = (key, newValue) => {
-		setFreeDate((freeDate) => ({
-			...freeDate,
-			[key]: newValue.format("DD-MM-YYYY")
-		}))
-	}
-
 	const onTimeChange = (key, newValue) => {
+		console.log(newValue)
+		console.log(today)
 		setFreeDate((freeDate) => ({
 			...freeDate,
-			[key]: newValue.format("HH:mm")
+			[key]: newValue
 		}))
 	}
 
@@ -37,7 +30,7 @@ export default function AddFreeDates() {
 			console.log("missing time error")
 			return false
 		}
-		if (Date(freeDate.date) < today) {
+		if (freeDate.date < today) {
 			setError("Date needs to be in the future.")
 			console.log("date error")
 			return false
@@ -53,6 +46,7 @@ export default function AddFreeDates() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log(freeDate)
 		console.log(checkSubmitErrors)
 		if (checkSubmitErrors()) {
 			fetch("/add_free_dates", {
@@ -68,13 +62,12 @@ export default function AddFreeDates() {
 						throw new Error(response.status);
 					}
 				})
-				// .then (
-				// 	setFreeDate({
-				// 		date: null,
-				// 		start: "",
-				// 		end: ""
-				// 	})
-				// )
+				.then (
+					setFreeDate({
+						start: null,
+						end: null,
+					})
+				)
 				.catch(error => {
 					console.log("Errors:", String(error.message));
 					setError("Error: ", String(error.message));
@@ -91,22 +84,24 @@ export default function AddFreeDates() {
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
-						gap: 2, // Adds space between the elements
+						gap: 2,
 					}}
 					component="form"
 					onSubmit={handleSubmit}
 				>
 					<p style={{ textAlign: 'center', marginBottom: 20 }}>Login</p>
-					<DatePicker
-						value={today}
-						onChange={(newValue) => onDateChange("date", newValue)} />
-					<TimePicker
+					<DateTimePicker
 						ampm={false}
 						minutesStep={15}
+						disablePast={true}
 						onChange={(newValue) => onTimeChange("start", newValue)} />
-					<TimePicker
+					<DateTimePicker
 						ampm={false}
 						minutesStep={15}
+						value={freeDate.start}
+						disablePast={true}
+						minDateTime={freeDate.start}
+						maxDate={freeDate.start}
 						onChange={(newValue) => onTimeChange("end", newValue)} />
 					<Button variant="contained" type='submit' >Submit</Button>
 					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
