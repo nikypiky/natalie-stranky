@@ -1,10 +1,12 @@
-import { DateTimePicker, DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, Button } from "@mui/material";
 import { useState } from 'react';
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc"
 
-const today = dayjs().hour()
+dayjs.extend(utc);
+const today = dayjs.utc().minute(0);
 
 export default function AddFreeDates() {
 
@@ -16,8 +18,6 @@ export default function AddFreeDates() {
 	const [error, setError] = useState("")
 
 	const onTimeChange = (key, newValue) => {
-		console.log(newValue)
-		console.log(today)
 		setFreeDate((freeDate) => ({
 			...freeDate,
 			[key]: newValue
@@ -30,7 +30,7 @@ export default function AddFreeDates() {
 			console.log("missing time error")
 			return false
 		}
-		if (freeDate.date < today) {
+		if (freeDate.start < today) {
 			setError("Date needs to be in the future.")
 			console.log("date error")
 			return false
@@ -47,6 +47,7 @@ export default function AddFreeDates() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(freeDate)
+
 		console.log(checkSubmitErrors)
 		if (checkSubmitErrors()) {
 			fetch("/add_free_dates", {
@@ -93,6 +94,7 @@ export default function AddFreeDates() {
 					<DateTimePicker
 						ampm={false}
 						minutesStep={15}
+						value={today}
 						disablePast={true}
 						onChange={(newValue) => onTimeChange("start", newValue)} />
 					<DateTimePicker
@@ -102,6 +104,7 @@ export default function AddFreeDates() {
 						disablePast={true}
 						minDateTime={freeDate.start}
 						maxDate={freeDate.start}
+						{...(!freeDate.start && {disabled: true})}
 						onChange={(newValue) => onTimeChange("end", newValue)} />
 					<Button variant="contained" type='submit' >Submit</Button>
 					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
