@@ -2,7 +2,9 @@ import { TimePicker, DatePicker, LocalizationProvider } from "@mui/x-date-picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, Button } from "@mui/material";
 import { useState } from 'react';
+import dayjs from "dayjs";
 
+const today = dayjs()
 
 export default function AddFreeDates() {
 
@@ -14,12 +16,6 @@ export default function AddFreeDates() {
 	})
 
 	const [error, setError] = useState("")
-
-	// if (freeDate) {
-	// 	console.log("start: ", freeDate.start)
-	// 	console.log("end: ", freeDate.end)
-	// 	console.log("date: ", freeDate.date)
-	// }
 
 	const onDateChange = (key, newValue) => {
 		setFreeDate((freeDate) => ({
@@ -35,35 +31,48 @@ export default function AddFreeDates() {
 		}))
 	}
 
-	// const handleSubmit = (event) => {
-	// 	event.preventDefault();
-	// 	console.log(freeDate)
-	// }
-
+	function checkSubmitErrors(){
+		if (!freeDate.start || !freeDate.end) {
+			setError("Start and End have to be chosen.")
+			console.log("missing time error")
+			return false
+		}
+		if (Date(freeDate.date) < today) {
+			setError("Date needs to be in the future.")
+			console.log("date error")
+			return false
+		}
+		if (freeDate.start >= freeDate.end) {
+			setError("End needs to be after start.")
+			console.log("time error")
+			return false
+		}
+		setError("")
+		return true
+	}
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		//send data to server
-		fetch("/add_free_dates", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(freeDate)
-		})
-			//process recieved data
-			.then(response => {
-				console.log("Login response statuss:", response.status);
-				//create a error message that can be use by .catch
-				if (!response.ok) {
-					throw new Error(response.status);
-				}
+		console.log(checkSubmitErrors)
+		if (checkSubmitErrors()) {
+			fetch("/add_free_dates", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(freeDate)
 			})
-			.catch(error => {
-				console.log("Errors:", String(error.message));
-				setError("Error: ", String(error.message));
-				// Handle error (e.g., show error message)
-			});
+				.then(response => {
+					console.log("Login response statuss:", response.status);
+					if (!response.ok) {
+						throw new Error(response.status);
+					}
+				})
+				.catch(error => {
+					console.log("Errors:", String(error.message));
+					setError("Error: ", String(error.message));
+				});
+		}
 	};
 
 
@@ -82,19 +91,17 @@ export default function AddFreeDates() {
 				>
 					<p style={{ textAlign: 'center', marginBottom: 20 }}>Login</p>
 					<DatePicker
-						// value={freeDate.date}
+						value={today}
 						onChange={(newValue) => onDateChange("date", newValue)} />
 					<TimePicker
 						ampm={false}
 						minutesStep={15}
-						// value={freeDate.start}
 						onChange={(newValue) => onTimeChange("start", newValue)} />
 					<TimePicker
 						ampm={false}
 						minutesStep={15}
-						// value={freeDate.end}
 						onChange={(newValue) => onTimeChange("end", newValue)} />
-					<Button variant="contained" type='submit' onSubmit={handleSubmit} >Submit</Button>
+					<Button variant="contained" type='submit' >Submit</Button>
 					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
 				</Box>
 			</LocalizationProvider>
