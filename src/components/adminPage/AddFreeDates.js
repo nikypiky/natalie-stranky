@@ -63,12 +63,12 @@ export default function AddFreeDates() {
 						throw new Error(response.status);
 					}
 				})
-				.then (
-					setFreeDate({
-						start: null,
-						end: null,
-					})
-				)
+				// .then (
+				// 	setFreeDate({
+				// 		start: null,
+				// 		end: null,
+				// 	})
+				// )
 				.catch(error => {
 					console.log("Errors:", String(error.message));
 					setError("Error: ", String(error.message));
@@ -112,8 +112,3 @@ export default function AddFreeDates() {
 			</LocalizationProvider>
 		</>);
 }
-sqlite> CREATE TABLE free_dates (
-	id INTEGER PRIMARY KEY,
-	time TEXT NOT NULL UNIQUE,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
