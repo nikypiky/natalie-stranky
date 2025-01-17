@@ -100,8 +100,15 @@ def add_free_dates():
     start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
     end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
     while start <= end:
-        run_sql("INSERT INTO free_dates (time) VALUES (?)", (start.strftime("%Y-%d-%m %H:%M"), ))
-        start = start + time_change
+            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M:%S"), ))
+            start = start + time_change
+    free_slots = run_sql("SELECT free_slot FROM free_dates")
+    dict_free_slots = {}
+    i = 0
+    for free_slot in free_slots:
+        dict_free_slots[i] = free_slot[0]
+        i = i + 1
+    print(dict_free_slots)
     return response
 
 
