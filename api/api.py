@@ -100,9 +100,9 @@ def add_free_dates():
     time_change = timedelta(minutes=15)
     start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
     end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
-    print (start)
-    print (start>end)
-    # for i in user_input:
-    #     print (user_input[i])
+    while start <= end:
+        run_sql("""INSERT INTO free_dates (time) VALUES (?)""", (start.strftime("%Y-%d-%m %H:%M"), ))
+        start = start + time_change
     return response
+
 
