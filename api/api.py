@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash
 import json
 import secrets
 import time
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -95,9 +96,13 @@ def add_free_dates():
     if status_code != 250:
         return response, 404
     user_input = request.get_json()
-    # print (user_input)
-    print (time.localtime())
-    for i in user_input:
-        print (user_input[i])
+    print ((user_input))
+    time_change = timedelta(minutes=15)
+    start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
+    end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
+    print (start)
+    print (start>end)
+    # for i in user_input:
+    #     print (user_input[i])
     return response
 
