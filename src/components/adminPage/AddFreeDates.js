@@ -112,3 +112,8 @@ export default function AddFreeDates() {
 			</LocalizationProvider>
 		</>);
 }
+sqlite> CREATE TABLE free_dates (
+	id INTEGER PRIMARY KEY,
+	time TEXT NOT NULL UNIQUE,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
