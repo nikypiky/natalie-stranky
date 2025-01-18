@@ -102,10 +102,21 @@ def add_free_dates():
     while start <= end:
             run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M:%S"), ))
             start = start + time_change
-    free_slots = run_sql("SELECT free_slot FROM free_dates ORDER BY free_dates")
-    dict_free_slots = {}
-    for i, free_slot in enumerate(free_slots):
-        dict_free_slots[i] = free_slot[0]
     return response
+
+@app.route("/get_free_dates", methods=["GET", "POST"])
+def get_free_dates():
+    response = make_response()
+    foo, status_code = verify_session()
+    if status_code != 250:
+        return response, 404
+    free_slots = run_sql("SELECT free_slot FROM free_dates")
+    list_free_slot = []
+    for free_slot in free_slots:
+        print ("free slot" + free_slot[0])
+        list_free_slot.append(free_slot[0])
+    print (list_free_slot)
+    return jsonify(list_free_slot)
+
 
 

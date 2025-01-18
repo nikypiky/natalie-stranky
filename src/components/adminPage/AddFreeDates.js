@@ -58,7 +58,7 @@ export default function AddFreeDates() {
 				body: JSON.stringify(freeDate)
 			})
 				.then(response => {
-					console.log("Login response statuss:", response.status);
+					console.log("Response statuss:", response.status);
 					if (!response.ok) {
 						throw new Error(response.status);
 					}
