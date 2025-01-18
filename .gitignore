@@ -22,4 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-api/__psycache__
+api/__psycache__/api.cpython-310.pyc
+
