@@ -1,9 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 import sqlite3
 from werkzeug.security import check_password_hash
-import json
 import secrets
-import time
 from datetime import datetime, timedelta
 
 app = Flask(__name__)

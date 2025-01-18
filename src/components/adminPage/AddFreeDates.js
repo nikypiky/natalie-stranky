@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import { useState } from 'react';
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc"
+import FreeDateTable from "./FreeDateTable";
 
 dayjs.extend(utc);
 const today = dayjs.utc().minute(0);
@@ -110,6 +111,7 @@ export default function AddFreeDates() {
 					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
 				</Box>
 			</LocalizationProvider>
+			<FreeDateTable/>
 		</>);
 }
 
