@@ -102,13 +102,10 @@ def add_free_dates():
     while start <= end:
             run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M:%S"), ))
             start = start + time_change
-    free_slots = run_sql("SELECT free_slot FROM free_dates")
+    free_slots = run_sql("SELECT free_slot FROM free_dates ORDER BY free_dates")
     dict_free_slots = {}
-    i = 0
-    for free_slot in free_slots:
+    for i, free_slot in enumerate(free_slots):
         dict_free_slots[i] = free_slot[0]
-        i = i + 1
-    print(dict_free_slots)
     return response
 
 
