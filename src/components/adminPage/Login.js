@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 // import { useField } from "@mui/x-date-pickers/internals";
 import { useState } from 'react';
-import Dashboard from "./Dashboard";
+import AdminPage from "./AdminPage";
 
 export default function Login() {
 
@@ -62,7 +62,7 @@ export default function Login() {
 
 	if (sessionToken) {
 		return (
-			<Dashboard />
+			<AdminPage />
 		)
 	}
 

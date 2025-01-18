@@ -138,3 +138,16 @@ body {
 		/* Adjust height for smaller screens */
 	}
 }
+
+.custom-button {
+	color: white; /* For text color */
+	margin: 16px; /* Equivalent to m: 2 in MUI */
+	width: 10vw; /* Viewport width */
+	min-width: 100px; /* Minimum width */
+	height: 8vh; /* Viewport height */
+	border-radius: 0; /* No border radius */
+	font-size: 10px; /* Font size */
+	border: 1px solid currentColor; /* To mimic "outlined" variant */
+	background-color: transparent; /* To match outlined variant */
+	cursor: pointer; /* Pointer cursor on hover */
+  }
