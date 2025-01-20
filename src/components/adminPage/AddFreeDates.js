@@ -48,8 +48,6 @@ export default function AddFreeDates() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(freeDate)
-
 		console.log(checkSubmitErrors)
 		if (checkSubmitErrors()) {
 			fetch("/add_free_dates", {
@@ -113,7 +111,7 @@ export default function AddFreeDates() {
 				</Box>
 			</LocalizationProvider>
 			<CalendarFreeDates/>
-			<FreeDateTable/>
+			{/* <FreeDateTable/> */}
 		</>);
 }
 

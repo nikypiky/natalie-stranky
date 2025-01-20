@@ -9,29 +9,10 @@ import Paper from '@mui/material/Paper';
 import { useState, useEffect } from 'react';
 
 
-export default function FreeDateTable() {
+export default function FreeDateTable(freeTimes) {
 
-	const [freeDates, addFreeDates] = useState([]);
+	console.log("free times", freeTimes)
 
-	useEffect(() => {
-	  fetch("/get_free_dates")
-		.then((response) => {
-		  if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		  }
-		  return response.json();
-		})
-		.then((data) => {
-		  addFreeDates(data);
-		})
-		.catch((error) => {
-		  console.error("Error fetching reservations: ", error);
-		});
-	}, []);
-
-	if (freeDates) {
-		console.log(Object.keys(freeDates))
-	}
 	return (
 		<div className='table'>
 			<TableContainer component={Paper}>
@@ -42,9 +23,9 @@ export default function FreeDateTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{/* {freeDates.map((row) => (
+						{/* {freeTimes.map((time) => (
 						<TableRow >
-							<TableCell>{row}</TableCell>
+							<TableCell>{time[0]}</TableCell>
 						</TableRow>
 						))} */}
 					</TableBody>
