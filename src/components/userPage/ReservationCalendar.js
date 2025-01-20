@@ -31,22 +31,11 @@ export default function ReservationCalendar() {
 			});
 	}, []);
 
-	const isWeekend = (date) => {
-		const dates = Object.keys(freeDates)
-		console.log(dates)
-		for (let i = 0; i < dates.length; i++) {
-			if (date.diff(dates[i], 'day') === 0) {
-				return false
-			}
-		}
-		return true
-	};
-
 	return (
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
 				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
-					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} shouldDisableDate={isWeekend} />
+					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} />
 				</LocalizationProvider>
 			</div>
 		</div>
