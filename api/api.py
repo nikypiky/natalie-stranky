@@ -108,13 +108,11 @@ def get_free_dates():
     foo, status_code = verify_session()
     if status_code != 250:
         return response, 404
-    free_slots = run_sql("SELECT free_slot FROM free_dates")
-    list_free_slot = []
-    for free_slot in free_slots:
-        print ("free slot" + free_slot[0])
-        list_free_slot.append(free_slot[0])
-    print (list_free_slot)
-    return jsonify(list_free_slot)
+    free_dates = run_sql("SELECT DISTINCT date(free_slot) FROM free_dates ORDER BY free_slot")
+    free_slots = {}
+    for date in free_dates:
+        free_slots[date[0]] = run_sql("SELECT time(free_slot) FROM free_dates where date(free_slot) = ?", (date[0], ))
+    return jsonify(free_slots)
 
 
 
