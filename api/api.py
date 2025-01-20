@@ -104,10 +104,6 @@ def add_free_dates():
 
 @app.route("/get_free_dates", methods=["GET", "POST"])
 def get_free_dates():
-    response = make_response()
-    foo, status_code = verify_session()
-    if status_code != 250:
-        return response, 404
     free_dates = run_sql("SELECT DISTINCT date(free_slot) FROM free_dates ORDER BY free_slot")
     free_slots = {}
     for date in free_dates:

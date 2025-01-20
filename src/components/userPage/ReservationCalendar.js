@@ -4,9 +4,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { darkScrollbar } from '@mui/material';
 
-export default function CalendarFreeDates() {
+export default function ReservationCalendar() {
 
 	const [freeDates, addFreeDates] = useState([]);
 
