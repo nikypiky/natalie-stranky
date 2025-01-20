@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 
 export default function FreeDateTable(freeTimes) {
 
-	console.log("free times", freeTimes)
+	console.log("free times", freeTimes.t)
 
 	return (
 		<div className='table'>
@@ -23,11 +23,11 @@ export default function FreeDateTable(freeTimes) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{/* {freeTimes.map((time) => (
+						{freeTimes.t?.map((time) => (
 						<TableRow >
 							<TableCell>{time[0]}</TableCell>
 						</TableRow>
-						))} */}
+						))}
 					</TableBody>
 				</Table>
 			</TableContainer>

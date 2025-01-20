@@ -41,7 +41,7 @@ export default function CalendarFreeDates() {
 				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
 					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} />
 				</LocalizationProvider>
-				<FreeDateTable freeTimes={freeDates[pickedDay.format(DATE_FORMAT)]}/>
+				<FreeDateTable t={freeDates[pickedDay.format(DATE_FORMAT)]}/>
 			</div>
 		</div>
 
