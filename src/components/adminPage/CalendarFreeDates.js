@@ -4,17 +4,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { darkScrollbar } from '@mui/material';
+import FreeDateTable from './FreeDateTable';
+import { DATE_FORMAT } from '../../constatns';
 
 export default function CalendarFreeDates() {
 
-	const [freeDates, addFreeDates] = useState([]);
+	const [freeDates, setFreeDates] = useState([]);
 
 	const [pickedDay, setPickedDay] = useState(dayjs())
-
-	if (freeDates) {
-		console.log(freeDates.length)
-	}
 
 	useEffect(() => {
 		fetch("/get_free_dates")
@@ -25,30 +22,26 @@ export default function CalendarFreeDates() {
 				return response.json();
 			})
 			.then((data) => {
-				addFreeDates(data);
+				setFreeDates(data);
 			})
 			.catch((error) => {
 				console.error("Error fetching reservations: ", error);
 			});
 	}, []);
 
-	const isWeekend = (date) => {
-		const dates = Object.keys(freeDates)
-		console.log(dates)
-		for (let i = 0; i < dates.length; i++) {
-			if (date.diff(dates[i], 'day') === 0) {
-				return false
-			}
-		}
-		return true
-	};
+
+	// if (pickedDay){
+	// 	console.log("pickedDay", )
+	// 	console.log("test", freeDates[pickedDay.format(DATE_FORMAT)])
+	// }
 
 	return (
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
 				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
-					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} shouldDisableDate={isWeekend} />
+					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} />
 				</LocalizationProvider>
+				<FreeDateTable t={freeDates[pickedDay.format(DATE_FORMAT)]}/>
 			</div>
 		</div>
 

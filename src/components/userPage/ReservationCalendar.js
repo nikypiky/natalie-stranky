@@ -5,15 +5,14 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
+import FreeDateTable from '../adminPage/FreeDateTable';
+import { DATE_FORMAT } from '../../constatns';
+
 export default function ReservationCalendar() {
 
 	const [freeDates, addFreeDates] = useState([]);
 
 	const [pickedDay, setPickedDay] = useState(dayjs())
-
-	if (freeDates) {
-		console.log(freeDates.length)
-	}
 
 	useEffect(() => {
 		fetch("/get_free_dates")
@@ -31,12 +30,19 @@ export default function ReservationCalendar() {
 			});
 	}, []);
 
+	const isFree = (date) => {
+		const dates = Object.keys(freeDates)
+		let dateString = date.format(DATE_FORMAT)
+		return !dates.includes(dateString)
+	};
+
 	return (
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
 				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
-					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} />
+					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} shouldDisableDate={isFree} disablePast={true} />
 				</LocalizationProvider>
+				{/* <FreeDateTable times= */}
 			</div>
 		</div>
 
