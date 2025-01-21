@@ -29,14 +29,10 @@ export default function ReservationsTable() {
 		});
 	}, []);
 
-	if (reservations) {
-		// console.log("res: ", reservations)
-	}
-
 	return (
 		<div className='table'>
 			<TableContainer component={Paper}>
-				<Table aria-label="simple table" sx={{margin: "50px"}}>
+				<Table aria-label="simple table" sx={{ margin: "50px" }}>
 					<TableHead>
 						<TableRow>
 							<TableCell>Name</TableCell>

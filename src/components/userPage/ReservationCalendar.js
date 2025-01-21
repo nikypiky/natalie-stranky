@@ -4,8 +4,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-
-import FreeDateTable from '../adminPage/FreeDateTable';
 import { DATE_FORMAT } from '../../constatns';
 
 export default function ReservationCalendar() {
@@ -13,6 +11,8 @@ export default function ReservationCalendar() {
 	const [freeDates, addFreeDates] = useState([]);
 
 	const [pickedDay, setPickedDay] = useState(dayjs())
+
+	if (pickedDay){}
 
 	useEffect(() => {
 		fetch("/get_free_dates")

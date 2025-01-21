@@ -9,7 +9,7 @@ import CalendarFreeDates from "./CalendarFreeDates";
 dayjs.extend(utc);
 const today = dayjs.utc().minute(0);
 
-export default function AddFreeDates() {
+export default function DeleteFreeDates() {
 
 	const [freeDate, setFreeDate] = useState({
 		start: null,
@@ -17,6 +17,22 @@ export default function AddFreeDates() {
 	})
 
 	const [error, setError] = useState("")
+	
+	useEffect(() => {
+		fetch("/get_free_dates")
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then((data) => {
+				setFreeDates(data);
+			})
+			.catch((error) => {
+				console.error("Error fetching reservations: ", error);
+			});
+	}, []);
 
 	const onTimeChange = (key, newValue) => {
 		setFreeDate((freeDate) => ({
@@ -89,7 +105,7 @@ export default function AddFreeDates() {
 					component="form"
 					onSubmit={handleSubmit}
 				>
-					<p style={{ textAlign: 'center', marginBottom: 20 }}>Add Free Dates</p>
+					<p style={{ textAlign: 'center', marginBottom: 20 }}>Delete Free Dates</p>
 					<DateTimePicker
 						ampm={false}
 						minutesStep={15}

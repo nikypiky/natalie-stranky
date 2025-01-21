@@ -29,7 +29,11 @@ export default function CalendarFreeDates() {
 			});
 	}, []);
 
-
+	const isFree = (date) => {
+		const dates = Object.keys(freeDates)
+		let dateString = date.format(DATE_FORMAT)
+		return !dates.includes(dateString)
+	};
 	// if (pickedDay){
 	// 	console.log("pickedDay", )
 	// 	console.log("test", freeDates[pickedDay.format(DATE_FORMAT)])
@@ -39,7 +43,7 @@ export default function CalendarFreeDates() {
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
 				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
-					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} />
+					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} disablePast={true} shouldDisableDate={isFree} />
 				</LocalizationProvider>
 				<FreeDateTable t={freeDates[pickedDay.format(DATE_FORMAT)]}/>
 			</div>
