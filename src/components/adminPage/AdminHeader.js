@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import AddFreeDates from "./AddFreeDates";
 import ReservationsTable from "./ReservationsTable";
+import DeleteFreeDates from "./DeleteFreeDates";
 
 export default function AdminHeader({ onSendValue }) {
 
@@ -61,7 +62,20 @@ export default function AdminHeader({ onSendValue }) {
 						fontSize: "10", // Correct font size
 					}}
 					onClick={() => {sendValue(<AddFreeDates/>)}}
-				>Add Add Free Dates</Button>
+				>Add Free Dates</Button>
+				<Button
+					variant="outlined"
+					color="white"
+					sx={{
+						m: 2,
+						width: "10vw",
+						minWidth: "100px",
+						height: "8vh",
+						borderRadius: 0,
+						fontSize: "10", // Correct font size
+					}}
+					onClick={() => {sendValue(<DeleteFreeDates/>)}}
+				>Delete Free Dates</Button>
 			</Box>
 		</Box>
 	);

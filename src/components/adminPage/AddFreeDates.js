@@ -92,12 +92,14 @@ export default function AddFreeDates() {
 					<p style={{ textAlign: 'center', marginBottom: 20 }}>Add Free Dates</p>
 					<DateTimePicker
 						ampm={false}
+						label={"Start"}
 						minutesStep={15}
 						value={today}
 						disablePast={true}
 						onChange={(newValue) => onTimeChange("start", newValue)} />
 					<DateTimePicker
 						ampm={false}
+						label={"End"}
 						minutesStep={15}
 						value={freeDate.start}
 						disablePast={true}
@@ -109,8 +111,6 @@ export default function AddFreeDates() {
 					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
 				</Box>
 			</LocalizationProvider>
-			<CalendarFreeDates/>
-			{/* <FreeDateTable/> */}
 		</>);
 }
 

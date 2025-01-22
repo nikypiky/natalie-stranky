@@ -4,7 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { DATE_FORMAT } from '../../constatns';
+import { DATE_FORMAT } from '../../constants';
 
 export default function ReservationCalendar() {
 

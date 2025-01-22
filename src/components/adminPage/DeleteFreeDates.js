@@ -1,23 +1,20 @@
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import * as React from 'react';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Box, Button } from "@mui/material";
-import { useState } from 'react';
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"
-import CalendarFreeDates from "./CalendarFreeDates";
-
-dayjs.extend(utc);
-const today = dayjs.utc().minute(0);
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { useState, useEffect } from 'react';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import dayjs from 'dayjs';
+import FreeDateTable from './FreeDateTable';
+import { DATE_FORMAT, TIME_FORMAT } from '../../constants';
+import { CardTravel } from '@mui/icons-material';
 
 export default function DeleteFreeDates() {
 
-	const [freeDate, setFreeDate] = useState({
-		start: null,
-		end: null,
-	})
+	const [freeDates, setFreeDates] = useState([]);
 
-	const [error, setError] = useState("")
-	
+	const [pickedDay, setPickedDay] = useState(dayjs())
+
 	useEffect(() => {
 		fetch("/get_free_dates")
 			.then((response) => {
@@ -34,100 +31,41 @@ export default function DeleteFreeDates() {
 			});
 	}, []);
 
-	const onTimeChange = (key, newValue) => {
-		setFreeDate((freeDate) => ({
-			...freeDate,
-			[key]: newValue
-		}))
-	}
-
-	function checkSubmitErrors(){
-		if (!freeDate.start || !freeDate.end) {
-			setError("Start and End have to be chosen.")
-			console.log("missing time error")
-			return false
-		}
-		if (freeDate.start < today) {
-			setError("Date needs to be in the future.")
-			console.log("date error")
-			return false
-		}
-		if (freeDate.start >= freeDate.end) {
-			setError("End needs to be after start.")
-			console.log("time error")
-			return false
-		}
-		setError("")
-		return true
-	}
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		console.log(checkSubmitErrors)
-		if (checkSubmitErrors()) {
-			fetch("/add_free_dates", {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(freeDate)
-			})
-				.then(response => {
-					console.log("Response statuss:", response.status);
-					if (!response.ok) {
-						throw new Error(response.status);
-					}
-				})
-				// .then (
-				// 	setFreeDate({
-				// 		start: null,
-				// 		end: null,
-				// 	})
-				// )
-				.catch(error => {
-					console.log("Errors:", String(error.message));
-					setError("Error: ", String(error.message));
-				});
-		}
+	const isDateFree = (date) => {
+		const dates = Object.keys(freeDates)
+		let dateString = date.format(DATE_FORMAT)
+		return !dates.includes(dateString)
 	};
 
+	const isTimeFree = (time) => {
+		const pickedDayString = pickedDay.format(DATE_FORMAT)
+		const timeString =  time.format(TIME_FORMAT)
+		let timesArray = []
+		try {
+			timesArray = Object.values(freeDates[pickedDayString])
+			for (let i = 0; i < timesArray.length; i++) {
+				timesArray[i] = timesArray[i][0].slice(0, 5)
+
+			}
+		}
+		catch (e) {
+			console.log("error: ", e)
+		}
+		return !timesArray.includes(timeString)
+	}
 
 	return (
-		<>
-			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-						gap: 2,
-					}}
-					component="form"
-					onSubmit={handleSubmit}
-				>
-					<p style={{ textAlign: 'center', marginBottom: 20 }}>Delete Free Dates</p>
-					<DateTimePicker
-						ampm={false}
-						minutesStep={15}
-						value={today}
-						disablePast={true}
-						onChange={(newValue) => onTimeChange("start", newValue)} />
-					<DateTimePicker
-						ampm={false}
-						minutesStep={15}
-						value={freeDate.start}
-						disablePast={true}
-						minDateTime={freeDate.start}
-						maxDate={freeDate.start}
-						{...(!freeDate.start && {disabled: true})}
-						onChange={(newValue) => onTimeChange("end", newValue)} />
-					<Button variant="contained" type='submit' >Submit</Button>
-					<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{error} </p>
-				</Box>
-			</LocalizationProvider>
-			<CalendarFreeDates/>
-			{/* <FreeDateTable/> */}
-		</>);
+		<div className='calendar-container'>
+			<div className='calendar-surounding'>
+				<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
+					<DateCalendar onChange={(newValue) => setPickedDay(newValue)} disablePast={true} shouldDisableDate={isDateFree} minutesstep={15} />
+					<TimePicker shouldDisableTime={isTimeFree} ampm={false} label={"Start"} />
+					<TimePicker shouldDisableTime={isTimeFree} ampm={false} label={"End"} />
+				</LocalizationProvider >
+			</div>
+		</div>
+
+	);
 }
 
 

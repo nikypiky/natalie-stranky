@@ -5,7 +5,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import FreeDateTable from './FreeDateTable';
-import { DATE_FORMAT } from '../../constatns';
+import { DATE_FORMAT } from '../../constants';
 
 export default function CalendarFreeDates() {
 
