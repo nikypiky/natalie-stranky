@@ -62,12 +62,14 @@ export default function AddFreeDates() {
 						minutesStep={15}
 						value={today}
 						disablePast={true}
+						skipDisabled={true}
 						onChange={(newValue) => onTimeChange("start", newValue)} />
 					<DateTimePicker
 						ampm={false}
 						label={"End"}
 						minutesStep={15}
 						value={data.start}
+						skipDisabled={true}
 						disablePast={true}
 						minDateTime={data.start}
 						maxDate={data.start}

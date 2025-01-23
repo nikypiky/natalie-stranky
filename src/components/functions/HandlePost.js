@@ -16,5 +16,4 @@ export default function HandlePost(destination, data, event) {
 		.catch(error => {
 			console.log("Errors:", String(error.message));
 		});
-	console.log("successs", data)
 }
