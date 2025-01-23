@@ -1,5 +1,5 @@
 import Login from "./Login";
-import VerifySession from "./verifySession";
+import VerifySession from "../functions/VerifySession"
 import AdminHeader from "./AdminHeader";
 import { useState } from "react";
 import ReservationsTable from "./ReservationsTable";

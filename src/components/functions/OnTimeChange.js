@@ -1,3 +1,0 @@
-export dafault function onTimeChange() {
-	
-}
