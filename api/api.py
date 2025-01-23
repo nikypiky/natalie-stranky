@@ -98,7 +98,7 @@ def add_free_dates():
     start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
     end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
     while start <= end:
-            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M:%S"), ))
+            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M"), ))
             start = start + time_change
     return response
 
@@ -110,5 +110,17 @@ def get_free_dates():
         free_slots[date[0]] = run_sql("SELECT time(free_slot) FROM free_dates where date(free_slot) = ?", (date[0], ))
     return jsonify(free_slots)
 
-
-
+@app.route("/delete_free_dates", methods={"GET", "POST"})
+def delete_free_dates():
+    response = make_response()
+    foo, status_code = verify_session()
+    if status_code != 250:
+        return response, 404
+    user_input = request.get_json()
+    time_change = timedelta(minutes=15)
+    start = datetime.strptime(user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
+    end = datetime.strptime(user_input["date"] + user_input["end"], "%Y-%m-%d%H:%M")
+    while start <= end:
+            run_sql("DELETE FROM free_dates WHERE free_slot = (?)", (start.strftime("%Y-%m-%d %H:%M"), ))
+            start = start + time_change
+    return response

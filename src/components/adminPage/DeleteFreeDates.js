@@ -73,7 +73,7 @@ export default function DeleteFreeDates() {
 						gap: 2,
 					}}
 					component="form"
-					onSubmit={(event) => HandlePost("/add_free_dates", data, event)}
+					onSubmit={(event) => HandlePost("/delete_free_dates", data, event)}
 				>
 					<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
 						<DateCalendar
