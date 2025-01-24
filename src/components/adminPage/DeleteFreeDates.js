@@ -16,7 +16,6 @@ export default function DeleteFreeDates() {
 
 	const [data, setData] = useState({})
 
-	const [counter, setCounter] = useState([])
 
 	const onTimeChange = (key, newValue) => {
 		setData((data) => ({
@@ -47,54 +46,25 @@ export default function DeleteFreeDates() {
 		return !dates.includes(dateString)
 	};
 
-	// const isTimeFree = (time, view) => {
-	// 	let timeString = time.format(TIME_FORMAT)
-	// 	let timesArray = []
-	// 	let hourArray = []
-	// 	try {
-	// 		timesArray = Object.values(freeDates[data.date])
-	// 		// console.log(time)
-	// 		for (let i = 0; i < timesArray.length; i++) {
-	// 			timesArray[i] = timesArray[i][0].slice(0, 5)
-	// 			hourArray[i] = timesArray[i].slice(0, 2)
-	// 		}
-	// 	}
-	// 	catch (e) {
-	// 		console.log("error: ", e)
-	// 	}
-	// 	if (view === "hours") {
-	// 		return !hourArray.includes(timeString.slice(0, 2))
-	// 	}
-	// 	if (view !== "minutes") {
-	// 		return !timesArray.includes(timeString)
-	// 	}
-	// 	return true
-	// }
 	const isTimeFree = (time, view) => {
-		const timeString = time.format("HH:mm"); // Format time to "HH:mm"
-		let timesArray = [];
-		let hourArray = [];
-
+		let timeString = time.format(TIME_FORMAT)
+		let timesArray = []
+		let hourArray = []
 		try {
-			// Extract available times for the selected date
-			timesArray = Object.values(freeDates[data.date]).flat().map(time => time.slice(0, 5)); // Flatten and slice to "HH:mm"
-			hourArray = timesArray.map(time => time.slice(0, 2)); // Extract just the hours "HH"
-		} catch (e) {
-			console.error("Error extracting freeDates:", e);
+			timesArray = Object.values(freeDates[data.date].flat().map(time => time.slice(0, 5)))
+			hourArray = timesArray.map(time => time.slice(0, 2))
 		}
-
+		catch (e) {
+			console.log("error: ", e)
+		}
 		if (view === "hours") {
-			// For the "hours" view, check if the hour is in the hourArray
-			return !hourArray.includes(timeString.slice(0, 2));
+			return !hourArray.includes(timeString.slice(0, 2))
 		}
-
 		if (view === "minutes") {
-			// For the "minutes" view, check if the exact time is in timesArray
-			return !timesArray.includes(timeString);
+			return !timesArray.includes(timeString)
 		}
-
-		return true; // Default to disabling if no condition is met
-	};
+		return true
+	}
 
 	return (
 		<div className='calendar-container'>
