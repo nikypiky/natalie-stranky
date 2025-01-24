@@ -8,6 +8,8 @@ import dayjs from 'dayjs';
 import { DATE_FORMAT, TIME_FORMAT } from '../../constants';
 import { Box, Button } from '@mui/material';
 import HandlePost from '../functions/HandlePost';
+import FreeDateCalendar from '../common/FreeDateCalendar';
+import FreeTimePicker from '../common/FreeTimePicker';
 
 
 export default function DeleteFreeDates() {
@@ -15,14 +17,6 @@ export default function DeleteFreeDates() {
 	const [freeDates, setFreeDates] = useState([]);
 
 	const [data, setData] = useState({})
-
-
-	const onTimeChange = (key, newValue) => {
-		setData((data) => ({
-			...data,
-			[key]: newValue
-		}))
-	}
 
 	useEffect(() => {
 		fetch("/get_free_dates")
@@ -40,32 +34,6 @@ export default function DeleteFreeDates() {
 			});
 	}, []);
 
-	const isDateFree = (date) => {
-		const dates = Object.keys(freeDates)
-		let dateString = date.format(DATE_FORMAT)
-		return !dates.includes(dateString)
-	};
-
-	const isTimeFree = (time, view) => {
-		let timeString = time.format(TIME_FORMAT)
-		let timesArray = []
-		let hourArray = []
-		try {
-			timesArray = Object.values(freeDates[data.date].flat().map(time => time.slice(0, 5)))
-			hourArray = timesArray.map(time => time.slice(0, 2))
-		}
-		catch (e) {
-			console.log("error: ", e)
-		}
-		if (view === "hours") {
-			return !hourArray.includes(timeString.slice(0, 2))
-		}
-		if (view === "minutes") {
-			return !timesArray.includes(timeString)
-		}
-		return true
-	}
-
 	return (
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
@@ -79,28 +47,10 @@ export default function DeleteFreeDates() {
 					component="form"
 					onSubmit={(event) => HandlePost("/delete_free_dates", data, event)}
 				>
-					<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
-						<DateCalendar
-							disablePast={true}
-							shouldDisableDate={isDateFree}
-							onChange={(newValue) => onTimeChange("date", newValue.format(DATE_FORMAT))}
-						/>
-						<TimePicker
-							shouldDisableTime={isTimeFree}
-							ampm={false}
-							label={"Start"}
-							format='HH:mm'
-							minutesStep={15}
-							skipDisabled={true}
-							onChange={(newValue) => onTimeChange("start", newValue.format(TIME_FORMAT))} />
-						<TimePicker
-							shouldDisableTime={isTimeFree}
-							ampm={false}
-							minutesStep={15}
-							onChange={(newValue) => onTimeChange("end", newValue.format(TIME_FORMAT))}
-							label={"End"} />
-						<Button variant="contained" type='submit' >Submit</Button>
-					</LocalizationProvider >
+					<FreeDateCalendar data={data} freeDates={freeDates} setData={setData} />
+					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
+					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"end"} />
+					<Button variant="contained" type='submit' >Submit</Button>
 				</Box>
 			</div>
 		</div>
