@@ -10,7 +10,7 @@ const AboutCard = ({ title = "TEXT", text }) => {
       <div className="background-image">
         <Carousel indicators={false} swipe={false} navButtonsAlwaysInvisible={true}>
           {
-            imageList.map((image, i) => <Item key={i} image={image} />)
+            imageList.map((image, i) => <Item setKey={i} image={image} />)
           }
         </Carousel>
       </div>
@@ -28,7 +28,7 @@ const AboutCard = ({ title = "TEXT", text }) => {
 function Item(props) {
 	return (
 		<div>
-			<img className="slider-image" src={props.image} alt={'image no. ' + props.key} />
+			<img className="slider-image" src={props.image} alt={'image no. ' + props.setKey} />
 		</div>
 	)
 }

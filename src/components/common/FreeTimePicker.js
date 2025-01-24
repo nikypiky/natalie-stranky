@@ -37,7 +37,7 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 				<TimePicker
 					shouldDisableTime={isTimeFree}
 					ampm={false}
-					label={"Start"}
+					label={setKey}
 					format='HH:mm'
 					minutesStep={15}
 					skipDisabled={true}

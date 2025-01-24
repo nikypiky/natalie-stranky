@@ -4,8 +4,9 @@ import { Box, Button } from '@mui/material';
 import HandlePost from '../functions/HandlePost';
 import FreeDateCalendar from '../common/FreeDateCalendar';
 import FreeTimePicker from '../common/FreeTimePicker';
+import OptionPicker from './OptionPicker';
 
-export default function DeleteFreeDates() {
+export default function Reservation () {
 
 	const [freeDates, setFreeDates] = useState([]);
 
@@ -38,11 +39,11 @@ export default function DeleteFreeDates() {
 						gap: 2,
 					}}
 					component="form"
-					onSubmit={(event) => HandlePost("/delete_free_dates", data, event)}
+					onSubmit={(event) => HandlePost("/add_reservation", data, event)}
 				>
-					<FreeDateCalendar data={data} freeDates={freeDates} setData={setData} />
+					<OptionPicker/>
+					<FreeDateCalendar freeDates={freeDates} setData={setData} />
 					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
-					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"end"} />
 					<Button variant="contained" type='submit' >Submit</Button>
 				</Box>
 			</div>

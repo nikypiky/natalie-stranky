@@ -1,8 +1,7 @@
 import Header from "./Header"
 import AboutCard from "./AboutCard"
-// import Reservation from "./Reservation"
+import Reservation from "./Reservation"
 import { Box } from '@mui/material';
-import ReservationCalendar from "./ReservationCalendar";
 
 
 export default function UserPage () {
@@ -11,7 +10,7 @@ export default function UserPage () {
 			<Box>
 				<Header />
 				<AboutCard/>
-				<ReservationCalendar/>
+				<Reservation/>
 			</Box>
 		</>
 	)
