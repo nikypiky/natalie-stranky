@@ -16,7 +16,6 @@ export default function RservationCalendar() {
 
 	const [data, setData] = useState({})
 
-
 	const onTimeChange = (key, newValue) => {
 		setData((data) => ({
 			...data,
