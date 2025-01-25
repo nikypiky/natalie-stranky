@@ -13,7 +13,7 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 
     const checkAvailability = (time, timesArray) => {
         // Check if the required number of slots are available
-        for (let i = 0; i < data.time; i++) {
+        for (let i = 0; i < data.time + 1; i++) {
             const timeString = time.format(TIME_FORMAT);
             if (!timesArray.includes(timeString)) {
                 return false; // Time slot is unavailable
