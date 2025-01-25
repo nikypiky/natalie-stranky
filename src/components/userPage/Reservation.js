@@ -28,6 +28,8 @@ export default function Reservation () {
 			});
 	}, []);
 
+	console.log("data: ", data)
+
 	return (
 		<div className='calendar-container'>
 			<div className='calendar-surounding'>
@@ -41,7 +43,7 @@ export default function Reservation () {
 					component="form"
 					onSubmit={(event) => HandlePost("/add_reservation", data, event)}
 				>
-					<OptionPicker/>
+					<OptionPicker setData={setData}/>
 					<FreeDateCalendar freeDates={freeDates} setData={setData} />
 					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
 					<Button variant="contained" type='submit' >Submit</Button>

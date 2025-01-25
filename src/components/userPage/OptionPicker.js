@@ -7,10 +7,12 @@ import Menu from '@mui/material/Menu';
 import { Typography } from '@mui/material';
 import { OPTIONS } from '../../constants';
 
-export default function OptionPicker() {
+export default function OptionPicker({ setData }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [selectedIndex, setSelectedIndex] = React.useState(1);
 	const open = Boolean(anchorEl);
+
+
 
 	const handleClickListItem = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -18,11 +20,11 @@ export default function OptionPicker() {
 
 	const handleMenuItemClick = (event, index) => {
 		setSelectedIndex(index);
-		console.log(anchorEl)
-		setAnchorEl(null);
-	};
-
-	const handleClose = () => {
+		setData((prevData) => ({
+			...prevData,
+			type: OPTIONS[selectedIndex].type,
+			time: OPTIONS[selectedIndex].time
+		}))
 		setAnchorEl(null);
 	};
 
@@ -48,7 +50,7 @@ export default function OptionPicker() {
 				>
 					<ListItemText
 						// primary="When device is locked"
-						primary={OPTIONS[selectedIndex]}
+						primary={OPTIONS[selectedIndex].type}
 					/>
 				</ListItemButton>
 			</List>
@@ -56,7 +58,6 @@ export default function OptionPicker() {
 				id="lock-menu"
 				anchorEl={anchorEl}
 				open={open}
-				onClose={handleClose}
 				MenuListProps={{
 					'aria-labelledby': 'lock-button',
 					role: 'listbox',
@@ -64,11 +65,11 @@ export default function OptionPicker() {
 			>
 				{OPTIONS.map((option, index) => (
 					<MenuItem
-						key={option}
+						key={option.type}
 						selected={index === selectedIndex}
 						onClick={(event) => handleMenuItemClick(event, index)}
 					>
-						{option}
+						{option.type}
 					</MenuItem>
 				))}
 			</Menu>
