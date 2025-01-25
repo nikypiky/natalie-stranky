@@ -22,7 +22,8 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 			console.log("error: ", e)
 		}
 		if (data.time){
-			timesArray.pop(data.time + 1)
+			for (let i = 0; i < data.time; i++)
+			timesArray.pop()
 		}
 		hourArray = timesArray.map(time => time.slice(0, 2))
 		if (view === "hours") {
