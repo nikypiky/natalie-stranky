@@ -81,7 +81,7 @@ export default function Login() {
 			>
 				<p style={{ textAlign: 'center', marginBottom: 20 }}>Login</p>
 				<TextField name="username" label='Username' onChange={handleOnChange} />
-				<TextField name="password" label='Password' onChange={handleOnChange} />
+				<TextField name="password" label='Password' onChange={handleOnChange} type="password" />
 				<Button variant="contained" type='submit'>Submit</Button>
 				<p style={{ textAlign: 'center', marginBottom: 20, color: "red" }}>{loginError} </p>
 			</Box>

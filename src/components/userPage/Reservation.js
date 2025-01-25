@@ -13,6 +13,8 @@ export default function Reservation () {
 
 	const [data, setData] = useState({})
 
+	const [message, setMessage] = useState(null)
+
 	useEffect(() => {
 		fetch("/get_free_dates")
 			.then((response) => {
@@ -29,7 +31,21 @@ export default function Reservation () {
 			});
 	}, []);
 
-	console.log("data: ", data)
+	const handleOnSubmit = (event) => {
+		event.preventDefault()
+		const timesArray = Object.values(freeDates[data.date].flat().map(time => time.slice(0, 5)))
+		console.log(timesArray)
+		if (timesArray.includes(data.start)) {
+			HandlePost("/add_reservation", data, event)
+			setMessage("")
+			setData({})
+		}
+		else {
+			setMessage("Please choose a available time.")
+		}
+	}
+
+	console.log("data: ", data)// dayjs(data.start.format(TIME_FORMAT)))
 
 	return (
 		<div className='calendar-container'>
@@ -42,13 +58,14 @@ export default function Reservation () {
 						gap: 2,
 					}}
 					component="form"
-					onSubmit={(event) => HandlePost("/add_reservation", data, event)}
+					onSubmit={handleOnSubmit}
 				>
 					<OptionPicker setData={setData}/>
 					<FreeDateCalendar freeDates={freeDates} setData={setData} />
-					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
-					<UserTextInput setData={setData} />
-					<Button variant="contained" type='submit' >Submit</Button>
+					{data.date && <FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />}
+					{data.start && <UserTextInput setData={setData} /> }
+					{data.start && data.date && data.name && data.email && <Button variant="contained" type='submit' >Submit</Button> }
+					<p style={{color: 'red'}}>{message}</p>
 				</Box>
 			</div>
 		</div>

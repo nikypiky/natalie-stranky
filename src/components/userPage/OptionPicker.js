@@ -9,7 +9,7 @@ import { OPTIONS } from '../../constants';
 
 export default function OptionPicker({ setData }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [selectedIndex, setSelectedIndex] = React.useState(1);
+	const [selectedIndex, setSelectedIndex] = React.useState(0);
 	const open = Boolean(anchorEl);
 
 
@@ -21,12 +21,16 @@ export default function OptionPicker({ setData }) {
 	const handleMenuItemClick = (event, index) => {
 		setSelectedIndex(index);
 		setData((prevData) => ({
-			...prevData,
-			type: OPTIONS[selectedIndex].type,
-			time: OPTIONS[selectedIndex].time
+			// ...prevData,
+			type: OPTIONS[index].type,
+			time: OPTIONS[index].time
 		}))
 		setAnchorEl(null);
 	};
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 	return (
 		<div>
@@ -58,6 +62,7 @@ export default function OptionPicker({ setData }) {
 				id="lock-menu"
 				anchorEl={anchorEl}
 				open={open}
+				onClose={handleClose}
 				MenuListProps={{
 					'aria-labelledby': 'lock-button',
 					role: 'listbox',

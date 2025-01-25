@@ -124,3 +124,10 @@ def delete_free_dates():
             run_sql("DELETE FROM free_dates WHERE free_slot = (?)", (start.strftime("%Y-%m-%d %H:%M"), ))
             start = start + time_change
     return response
+
+@app.route("/add_reservation", methods={"POST"})
+def add_reservation():
+    response = make_response()
+    user_input = request.get_json()
+    print (user_input)
+    return response

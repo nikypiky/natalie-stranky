@@ -3,7 +3,7 @@ import { DateCalendar } from "@mui/x-date-pickers"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
-export default function FreeDateCalendar({ freeDates, setData }) {
+export default function FreeDateCalendar({ freeDates, setData, setDisabled }) {
 
 	const onTimeChange = (key, newValue) => {
 		setData((data) => ({
@@ -23,6 +23,7 @@ export default function FreeDateCalendar({ freeDates, setData }) {
 			<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
 				<DateCalendar
 					disablePast={true}
+					disabled={setDisabled}
 					shouldDisableDate={isDateFree}
 					onChange={(newValue) => onTimeChange("date", newValue.format(DATE_FORMAT))}
 				/>

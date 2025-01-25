@@ -17,11 +17,14 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 		let hourArray = []
 		try {
 			timesArray = Object.values(freeDates[data.date].flat().map(time => time.slice(0, 5)))
-			hourArray = timesArray.map(time => time.slice(0, 2))
 		}
 		catch (e) {
 			console.log("error: ", e)
 		}
+		if (data.time){
+			timesArray.pop(data.time + 1)
+		}
+		hourArray = timesArray.map(time => time.slice(0, 2))
 		if (view === "hours") {
 			return !hourArray.includes(timeString.slice(0, 2))
 		}
@@ -41,7 +44,9 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 					format='HH:mm'
 					minutesStep={15}
 					skipDisabled={true}
-					onChange={(newValue) => onTimeChange(setKey, newValue.format(TIME_FORMAT))} />
+					onChange={(newValue) => onTimeChange(setKey, newValue.format(TIME_FORMAT))}
+					onError={(error) => { console.log(error) }}
+				/>
 			</LocalizationProvider>
 		</>
 	)
