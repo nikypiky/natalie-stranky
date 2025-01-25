@@ -61,7 +61,7 @@ export default function Reservation () {
 					onSubmit={handleOnSubmit}
 				>
 					<OptionPicker setData={setData}/>
-					<FreeDateCalendar freeDates={freeDates} setData={setData} />
+					<FreeDateCalendar freeDates={freeDates} setData={setData} setDisabled={!data.type} />
 					{data.date && <FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />}
 					{data.start && <UserTextInput setData={setData} /> }
 					{data.start && data.date && data.name && data.email && <Button variant="contained" type='submit' >Submit</Button> }
