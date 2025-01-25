@@ -5,6 +5,7 @@ import HandlePost from '../functions/HandlePost';
 import FreeDateCalendar from '../common/FreeDateCalendar';
 import FreeTimePicker from '../common/FreeTimePicker';
 import OptionPicker from './OptionPicker';
+import UserTextInput from './UserTextInput';
 
 export default function Reservation () {
 
@@ -46,6 +47,7 @@ export default function Reservation () {
 					<OptionPicker setData={setData}/>
 					<FreeDateCalendar freeDates={freeDates} setData={setData} />
 					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
+					<UserTextInput setData={setData} />
 					<Button variant="contained" type='submit' >Submit</Button>
 				</Box>
 			</div>
