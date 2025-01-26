@@ -1,5 +1,7 @@
 export default function HandlePost(destination, data, event) {
-	event.preventDefault();
+	if (event) {
+		event.preventDefault();
+	}
 	fetch(destination, {
 		method: "POST",
 		headers: {

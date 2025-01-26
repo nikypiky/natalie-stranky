@@ -109,9 +109,9 @@ def add_free_dates():
     start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
     end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
     while start <= end:
-            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)",
-                    (start.strftime("%Y-%m-%d %H:%M"), ))
-            start = start + time_change
+        run_sql("INSERT INTO free_dates (free_slot) VALUES (?)",
+                (start.strftime("%Y-%m-%d %H:%M"), ))
+        start = start + time_change
     return response
 
 
@@ -122,7 +122,7 @@ def get_free_dates():
     free_slots = {}
     for date in free_dates:
         free_slots[date[0]] = run_sql(
-            "SELECT time(free_slot) FROM free_dates where date(free_slot) = ?", (date[0], ))
+            "SELECT time(free_slot) FROM free_dates WHERE date(free_slot) = ?", (date[0], ))
     return jsonify(free_slots)
 
 
@@ -139,14 +139,20 @@ def delete_free_dates():
     end = datetime.strptime(
         user_input["date"] + user_input["end"], "%Y-%m-%d%H:%M")
     while start <= end:
-            run_sql("DELETE FROM free_dates WHERE free_slot = (?)",
-                    (start.strftime("%Y-%m-%d %H:%M"), ))
-            start = start + time_change
+        run_sql("DELETE FROM free_dates WHERE free_slot = (?)",
+                (start.strftime("%Y-%m-%d %H:%M"), ))
+        start = start + time_change
     return response
 
+def delete_time_slots(start, length):
+    time_change = timedelta(minutes=15)
+    for i in range (length):
+        run_sql("DELETE FROM free_dates WHERE free_slot = ?",
+                (start.strftime("%Y-%m-%d %H:%M"), ))
+        start = start + time_change
 
 @app.route("/add_reservation_pending", methods={"POST"})
-def add_reservation():
+def add_reservation_pending():
     response = make_response()
     user_input = request.get_json()
     verification_token = secrets.token_hex(16)
@@ -166,10 +172,11 @@ def add_reservation():
     # Create the email message
     mail_message = Message(
         "Reservation Pending",  # Subject of the email
-        sender = app.config["MAIL_USERNAME"],
+        sender=app.config["MAIL_USERNAME"],
         recipients=[user_input["email"]]  # Email recipient
     )
-    mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{verification_token}"   # Set email body content
+    # Set email body content
+    mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{verification_token}"
 
     # Send the email
     try:
@@ -178,7 +185,27 @@ def add_reservation():
     except Exception as e:
         print(f"Error sending email: {e}")
 
+    delete_time_slots(start, user_input["time"])
     return response
+
+@app.route("/confirm_reservation", methods=["POST"])
+def confirm_reservation():
+    response = make_response()
+    user_input = request.get_json()
+    run_sql("""INSERT INTO reservations
+            (name, email, phone, time_of_reservation, type, created_at)
+            SELECT name, email, phone, time_of_reservation, type, created_at
+            FROM pending_reservations
+            WHERE verification_token = (?)""",
+            (user_input, ))
+    run_sql(""" DELETE FROM pending_reservations
+            WHERE verification_token = (?);""",
+            (user_input, ))
+    return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+# INSERT INTO reservations (name, email, phone, time_of_reservation, type, created_at) SELECT name, email, phone, time_of_reservation, type, created_at FROM pending_reservations WHERE verification_token = "f58a4f0e598aa36f37248e95e2faede7" DELETE FROM pending_reservations WHERE verification_token = ?;
