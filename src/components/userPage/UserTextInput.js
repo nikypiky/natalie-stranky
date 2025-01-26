@@ -31,7 +31,7 @@ export default function UserTextInput({ setData }) {
 			>
 				<TextField name='name' onChange={handleOnchange} label="Name" variant='standard' required={true} />
 				<TextField name='email' onChange={handleOnchange} label="E-mail" variant="standard" type='email' />
-				<TextField name='tel.' onChange={handleOnchange} label="Tel. (Optional)" variant="standard" />
+				<TextField name='tel.' onChange={handleOnchange} label="Tel." variant="standard" defaultValue={""}/>
 			</Box>
 		</>
 	);

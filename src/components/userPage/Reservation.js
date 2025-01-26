@@ -6,14 +6,16 @@ import FreeDateCalendar from '../common/FreeDateCalendar';
 import FreeTimePicker from '../common/FreeTimePicker';
 import OptionPicker from './OptionPicker';
 import UserTextInput from './UserTextInput';
+import { Typography } from '@mui/material';
 
-export default function Reservation () {
+export default function Reservation() {
 
 	const [freeDates, setFreeDates] = useState([]);
 
 	const [data, setData] = useState({})
 
 	const [message, setMessage] = useState(null)
+	const [error, setError] = useState(null)
 
 	useEffect(() => {
 		fetch("/get_free_dates")
@@ -36,12 +38,12 @@ export default function Reservation () {
 		const timesArray = Object.values(freeDates[data.date].flat().map(time => time.slice(0, 5)))
 		console.log(timesArray)
 		if (timesArray.includes(data.start)) {
-			HandlePost("/add_reservation", data, event)
-			setMessage("")
-			setData({})
+			HandlePost("/add_reservation_pending", data, event)
+			// setMessage(true)
+			// setData({})
 		}
 		else {
-			setMessage("Please choose a available time.")
+			setError("Please choose a available time.")
 		}
 	}
 
@@ -60,12 +62,18 @@ export default function Reservation () {
 					component="form"
 					onSubmit={handleOnSubmit}
 				>
-					<OptionPicker setData={setData}/>
-					<FreeDateCalendar freeDates={freeDates} setData={setData} setDisabled={!data.type} />
-					{data.date && <FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />}
-					{data.start && <UserTextInput setData={setData} /> }
-					{data.start && data.date && data.name && data.email && <Button variant="contained" type='submit' >Submit</Button> }
-					<p style={{color: 'red'}}>{message}</p>
+					{!message ?
+						(
+							<><OptionPicker setData={setData} />
+								<FreeDateCalendar freeDates={freeDates} setData={setData} setDisabled={!data.type} />
+								{data.date && <FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />}
+								{data.start && <UserTextInput setData={setData} />}
+								{data.start && data.date && data.name && data.email && data.email && <Button variant="contained" type='submit' >Submit</Button>}
+								<p style={{ color: 'red' }}>{error}</p>
+							</>
+						)
+						: <Typography variant="h2">Thank you for your reservation, we have sent you a confirmation email.</Typography>}
+
 				</Box>
 			</div>
 		</div>

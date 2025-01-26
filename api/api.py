@@ -125,9 +125,22 @@ def delete_free_dates():
             start = start + time_change
     return response
 
-@app.route("/add_reservation", methods={"POST"})
+@app.route("/add_reservation_pending", methods={"POST"})
 def add_reservation():
     response = make_response()
     user_input = request.get_json()
+    verification_token = secrets.token_hex(16)
+    start = datetime.strptime(user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
+    run_sql("""INSERT INTO pending_reservations
+            (name, email, phone, time_of_reservation, type, duration, verification_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (user_input["name"],
+             user_input["email"],
+             user_input["tel."],
+             (user_input["date"] + " " + user_input["start"]),
+             user_input["type"],
+             user_input["time"],
+             verification_token ))
     print (user_input)
     return response
+
