@@ -10,6 +10,10 @@ export default function FreeDateCalendar({ freeDates, setData, setDisabled }) {
 			...data,
 			[key]: newValue
 		}))
+		setData((data) => ({
+			...data,
+			start: '',
+		}))
 	}
 
 	const isDateFree = (date) => {
