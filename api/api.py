@@ -169,7 +169,7 @@ def add_reservation():
         sender = app.config["MAIL_USERNAME"],
         recipients=[user_input["email"]]  # Email recipient
     )
-    mail_message.body = "Your reservation is pending. Please verify your details."  # Set email body content
+    mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{verification_token}"   # Set email body content
 
     # Send the email
     try:
