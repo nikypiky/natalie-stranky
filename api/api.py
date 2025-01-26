@@ -2,10 +2,19 @@ from flask import Flask, request, jsonify, make_response
 import sqlite3
 from werkzeug.security import check_password_hash
 import secrets
+from flask_mail import Message, Mail
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+app.config['MAIL_SERVER'] = "smtp.gmail.com"
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = "n29952639@gmail.com"
+app.config['MAIL_PASSWORD'] = "eoyn phpq bdoe gmey "
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 # secret key for cookies
 app.secret_key = "test"
 
@@ -67,6 +76,7 @@ def verify_session(session_token=0):
     else:
         return response, 250
 
+
 @app.route("/get_reservations", methods=["GET", "POST"])
 def get_reservations():
     response = make_response()
@@ -76,7 +86,7 @@ def get_reservations():
     data = run_sql("SELECT * FROM reservations ORDER BY time_of_reservation")
     reservations = []
     for i in data:
-        reservation ={}
+        reservation = {}
         reservation["id"] = i[0]
         reservation["name"] = i[1]
         reservation["email"] = i[2]
@@ -86,6 +96,7 @@ def get_reservations():
         reservation["notes"] = i[6]
         reservations.append(reservation)
     return jsonify(reservations)
+
 
 @app.route("/add_free_dates", methods=["GET", "POST"])
 def add_free_dates():
@@ -98,17 +109,22 @@ def add_free_dates():
     start = datetime.strptime(user_input["start"], "%Y-%m-%dT%H:%M:%S.%fZ")
     end = datetime.strptime(user_input["end"], "%Y-%m-%dT%H:%M:%S.%fZ")
     while start <= end:
-            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)", (start.strftime("%Y-%m-%d %H:%M"), ))
+            run_sql("INSERT INTO free_dates (free_slot) VALUES (?)",
+                    (start.strftime("%Y-%m-%d %H:%M"), ))
             start = start + time_change
     return response
 
+
 @app.route("/get_free_dates", methods=["GET", "POST"])
 def get_free_dates():
-    free_dates = run_sql("SELECT DISTINCT date(free_slot) FROM free_dates ORDER BY free_slot")
+    free_dates = run_sql(
+        "SELECT DISTINCT date(free_slot) FROM free_dates ORDER BY free_slot")
     free_slots = {}
     for date in free_dates:
-        free_slots[date[0]] = run_sql("SELECT time(free_slot) FROM free_dates where date(free_slot) = ?", (date[0], ))
+        free_slots[date[0]] = run_sql(
+            "SELECT time(free_slot) FROM free_dates where date(free_slot) = ?", (date[0], ))
     return jsonify(free_slots)
+
 
 @app.route("/delete_free_dates", methods={"GET", "POST"})
 def delete_free_dates():
@@ -118,21 +134,27 @@ def delete_free_dates():
         return response, 404
     user_input = request.get_json()
     time_change = timedelta(minutes=15)
-    start = datetime.strptime(user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
-    end = datetime.strptime(user_input["date"] + user_input["end"], "%Y-%m-%d%H:%M")
+    start = datetime.strptime(
+        user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
+    end = datetime.strptime(
+        user_input["date"] + user_input["end"], "%Y-%m-%d%H:%M")
     while start <= end:
-            run_sql("DELETE FROM free_dates WHERE free_slot = (?)", (start.strftime("%Y-%m-%d %H:%M"), ))
+            run_sql("DELETE FROM free_dates WHERE free_slot = (?)",
+                    (start.strftime("%Y-%m-%d %H:%M"), ))
             start = start + time_change
     return response
+
 
 @app.route("/add_reservation_pending", methods={"POST"})
 def add_reservation():
     response = make_response()
     user_input = request.get_json()
     verification_token = secrets.token_hex(16)
-    start = datetime.strptime(user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
+    start = datetime.strptime(
+        user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
     run_sql("""INSERT INTO pending_reservations
-            (name, email, phone, time_of_reservation, type, duration, verification_token)
+            (name, email, phone, time_of_reservation,
+             type, duration, verification_token)
             VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (user_input["name"],
              user_input["email"],
@@ -140,7 +162,23 @@ def add_reservation():
              (user_input["date"] + " " + user_input["start"]),
              user_input["type"],
              user_input["time"],
-             verification_token ))
-    print (user_input)
+             verification_token))
+    # Create the email message
+    mail_message = Message(
+        "Reservation Pending",  # Subject of the email
+        sender = app.config["MAIL_USERNAME"],
+        recipients=[user_input["email"]]  # Email recipient
+    )
+    mail_message.body = "Your reservation is pending. Please verify your details."  # Set email body content
+
+    # Send the email
+    try:
+        mail.send(mail_message)
+        print("Mail has been sent")
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
     return response
 
+if __name__ == '__main__':
+    app.run(debug=True)
