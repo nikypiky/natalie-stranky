@@ -27,6 +27,7 @@ export default function FreeDateCalendar({ freeDates, setData, setDisabled }) {
 			<LocalizationProvider className='calendar' dateAdapter={AdapterDayjs}>
 				<DateCalendar
 					disablePast={true}
+					disableHighlightToday={true}
 					disabled={setDisabled}
 					shouldDisableDate={isDateFree}
 					onChange={(newValue) => onTimeChange("date", newValue.format(DATE_FORMAT))}
