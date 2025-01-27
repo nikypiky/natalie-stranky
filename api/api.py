@@ -133,23 +133,35 @@ def delete_free_dates():
     if status_code != 250:
         return response, 404
     user_input = request.get_json()
-    time_change = timedelta(minutes=15)
     start = datetime.strptime(
         user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
     end = datetime.strptime(
         user_input["date"] + user_input["end"], "%Y-%m-%d%H:%M")
-    while start <= end:
-        run_sql("DELETE FROM free_dates WHERE free_slot = (?)",
-                (start.strftime("%Y-%m-%d %H:%M"), ))
-        start = start + time_change
+    run_sql("""DELETE FROM free_dates
+                WHERE datetime(free_slot) >= datetime(?)
+                AND datetime(free_slot) < datetime(?)""",
+            (start.strftime("%Y-%m-%d %H:%M"),
+             end.strftime("%Y-%m-%d %H:%M")))
     return response
 
+
 def delete_time_slots(start, length):
-    time_change = timedelta(minutes=15)
-    for i in range (length):
-        run_sql("DELETE FROM free_dates WHERE free_slot = ?",
-                (start.strftime("%Y-%m-%d %H:%M"), ))
+    end = start + timedelta(minutes=15*length)
+    print(end, start, length)
+    run_sql("""DELETE FROM free_dates
+                WHERE datetime(free_slot) >= datetime(?)
+                AND datetime(free_slot) < datetime(?)""",
+            (start.strftime("%Y-%m-%d %H:%M"),
+             end.strftime("%Y-%m-%d %H:%M")))
+
+
+def return_time_slots(start, length):
+    time_change = time_change = timedelta(minutes=15)
+    for i in range(length):
+        run_sql("INSER INTO free_dates (free_slot) VALUES ?",
+                (start.strftime("%Y-%m-%d %H:%M")))
         start = start + time_change
+
 
 @app.route("/add_reservation_pending", methods={"POST"})
 def add_reservation_pending():
@@ -180,7 +192,7 @@ def add_reservation_pending():
 
     # Send the email
     try:
-        mail.send(mail_message)
+        # mail.send(mail_message)
         print("Mail has been sent")
     except Exception as e:
         print(f"Error sending email: {e}")
@@ -188,15 +200,16 @@ def add_reservation_pending():
     delete_time_slots(start, user_input["time"])
     return response
 
+
 @app.route("/confirm_reservation", methods=["POST"])
 def confirm_reservation():
     response = make_response()
     user_input = request.get_json()
     run_sql("""INSERT INTO reservations
             (name, email, phone, time_of_reservation, type, created_at)
-            SELECT name, email, phone, time_of_reservation, type, created_at
-            FROM pending_reservations
-            WHERE verification_token = (?)""",
+                SELECT name, email, phone, time_of_reservation, type, created_at
+                FROM pending_reservations
+                WHERE verification_token = (?)""",
             (user_input, ))
     run_sql(""" DELETE FROM pending_reservations
             WHERE verification_token = (?);""",
@@ -208,4 +221,4 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-# INSERT INTO reservations (name, email, phone, time_of_reservation, type, created_at) SELECT name, email, phone, time_of_reservation, type, created_at FROM pending_reservations WHERE verification_token = "f58a4f0e598aa36f37248e95e2faede7" DELETE FROM pending_reservations WHERE verification_token = ?;
+# select free_slot from free_dates where datetime(free_slot) < datetime(2025-01-29 18:30) AND datetime(free_slot) > datetime(2025-01-29 18:30);

@@ -41,8 +41,14 @@ export default function DeleteFreeDates() {
 					onSubmit={(event) => HandlePost("/delete_free_dates", data, event)}
 				>
 					<FreeDateCalendar data={data} freeDates={freeDates} setData={setData} />
-					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
-					<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"end"} />
+					{data.date ? (
+						<>
+							<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"start"} />
+							<FreeTimePicker data={data} freeDates={freeDates} setData={setData} setKey={"end"} />
+						</>
+					) : (
+						<p>Please select a date first.</p>
+					)}
 					<Button variant="contained" type='submit' >Submit</Button>
 				</Box>
 			</div>
