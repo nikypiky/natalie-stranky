@@ -3,10 +3,12 @@ import sqlite3
 from werkzeug.security import check_password_hash
 import secrets
 from flask_mail import Message, Mail
+from flask_apscheduler import APScheduler
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+# confuigure mailing function
 app.config['MAIL_SERVER'] = "smtp.gmail.com"
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = "n29952639@gmail.com"
@@ -15,10 +17,23 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
+
 # secret key for cookies
 app.secret_key = "test"
 
 db_path = "reservations.db"
+
+# cofigure scheduler
+class Config:
+    SCHEDULER_API_ENABLED = True
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+@scheduler.task('interval', id='job_id', seconds=10)
+def job_function():
+    print("Interval job executed!")
 
 
 def run_sql(script, values=0):
@@ -158,7 +173,7 @@ def delete_time_slots(start, length):
 def return_time_slots(start, length):
     time_change = time_change = timedelta(minutes=15)
     for i in range(length):
-        run_sql("INSER INTO free_dates (free_slot) VALUES ?",
+        run_sql("INSERT INTO free_dates (free_slot) VALUES ?",
                 (start.strftime("%Y-%m-%d %H:%M")))
         start = start + time_change
 
@@ -217,8 +232,8 @@ def confirm_reservation():
     return response
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 
 # select free_slot from free_dates where datetime(free_slot) < datetime(2025-01-29 18:30) AND datetime(free_slot) > datetime(2025-01-29 18:30);
