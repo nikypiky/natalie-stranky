@@ -40,8 +40,8 @@ export default function Reservation() {
 		console.log(timesArray)
 		if (timesArray.includes(data.start)) {
 			HandlePost("/add_reservation_pending", data, event)
-			// setMessage(true)
-			// setData({})
+			setMessage(true)
+			setData({})
 		}
 		else {
 			setError("Please choose a available time.")

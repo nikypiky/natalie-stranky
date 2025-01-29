@@ -4,7 +4,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState, useEffect } from 'react';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs from 'dayjs';
 import { DATE_FORMAT, TIME_FORMAT } from '../../constants';
 import { Box, Button } from '@mui/material';
 import HandlePost from '../functions/HandlePost';
@@ -16,7 +15,7 @@ export default function DeleteFreeDates() {
 
 	const [data, setData] = useState({})
 
-	const [counter, setCounter] = useState([])
+	// const [counter, setCounter] = useState([])
 
 	const onTimeChange = (key, newValue) => {
 		setData((data) => ({

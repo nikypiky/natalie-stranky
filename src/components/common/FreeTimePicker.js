@@ -1,7 +1,6 @@
 import { TIME_FORMAT } from "../../constants";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
 
 export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 	const onTimeChange = (key, newValue) => {
@@ -33,7 +32,7 @@ export default function FreeTimePicker({ data, setData, freeDates, setKey }) {
 		}
 
 		if (view === "hours") {
-			const hourArray = timesArray.map((slot) => slot.slice(0, 2));
+			// const hourArray = timesArray.map((slot) => slot.slice(0, 2));
 			return !checkAvailability(time, timesArray);
 		}
 
