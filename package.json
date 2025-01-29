@@ -50,5 +50,8 @@
   "proxy": "https://natalie-stranky-api.onrender.com",
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
-  }
+  },
+  "engines": {
+  "node": "22.12.0"
+}
 }
