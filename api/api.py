@@ -5,8 +5,12 @@ import secrets
 from flask_mail import Message, Mail
 from flask_apscheduler import APScheduler
 from datetime import datetime, timedelta
+from itertools import chain
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 # confuigure mailing function
 app.config['MAIL_SERVER'] = "smtp.gmail.com"
@@ -24,16 +28,15 @@ app.secret_key = "test"
 db_path = "reservations.db"
 
 # cofigure scheduler
+
+
 class Config:
     SCHEDULER_API_ENABLED = True
+
 
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
-
-@scheduler.task('interval', id='job_id', seconds=10)
-def job_function():
-    print("Interval job executed!")
 
 
 def run_sql(script, values=0):
@@ -232,8 +235,52 @@ def confirm_reservation():
     return response
 
 
+def clear_old_free_dates():
+    run_sql("DELETE FROM free_dates where date(free_slot) <= date();")
+
+
+def move_old_reservations():
+    run_sql("""INSERT INTO past_reservations
+            (name, email, phone, time_of_reservation, type)
+                SELECT name, email, phone, time_of_reservation, type
+                FROM reservations
+                WHERE date(time_of_reservation) <= date();""")
+    run_sql("DELETE FROM reservations where date(time_of_reservation) <= date();")
+
+
+def remind_pending_reservation():
+    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
+    for email in email_pending_reservations:
+        mail_message = Message(
+            "Reservation Pending",  # Subject of the email
+            sender=app.config["MAIL_USERNAME"],
+            recipients=[email[0]]  # Email recipient
+        )
+    # Set email body content
+    mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{email[1]}, if you fail to do so your reservation will be canceled."
+
+def delete_pending_reservation():
+    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
+    run_sql("DELETE FROM pending_reservations WHERE date(created_at) <= date('now', '-2 day'); ")
+    for email in email_pending_reservations:
+        mail_message = Message(
+            "Reservation Canceled",  # Subject of the email
+            sender=app.config["MAIL_USERNAME"],
+            recipients=[email[0]]  # Email recipient
+        )
+    # Set email body content
+    mail_message.body = f"Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+
+@scheduler.task('cron', id='cron_job', hour=19, minute=0)
+def job_function():
+    clear_old_free_dates()
+    move_old_reservations()
+    remind_pending_reservation()
+    delete_pending_reservation()
+
+    print("Interval job executed!")
 # if __name__ == '__main__':
 #     app.run(debug=True)
 
 
-# select free_slot from free_dates where datetime(free_slot) < datetime(2025-01-29 18:30) AND datetime(free_slot) > datetime(2025-01-29 18:30);
+# INSER INTO past_reservations
