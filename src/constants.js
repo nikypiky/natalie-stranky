@@ -8,7 +8,7 @@ export const OPTIONS = [
 	{type: "Dámský střih dlouhý - 1200kč", time: 7},
 	{type: "Konzultace - zdarma", time: 2},
 	{type: "Úprava vousů - 250kč", time: 2},
-	{type: "Účesi + styling - 600kč", time: 4},
+	{type: "Účesy + styling - 600kč", time: 4},
 	{type: "Buzz cut - 400kč", time: 3},
 	{type: "Masáž + mytí hlavy - 450kč", time: 2},
 	{type: "Foukaná + mytí - 500kč", time: 2},

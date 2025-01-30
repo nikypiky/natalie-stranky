@@ -13,34 +13,14 @@ export default function AddFreeDates() {
 
 	const [data, setdata] = useState({})
 
+	const [message, setMessage] = useState("")
+
 	const onTimeChange = (key, newValue) => {
 		setdata((data) => ({
 			...data,
 			[key]: newValue
 		}))
 	}
-
-	// const handleSubmit = (event) => {
-	// 	event.preventDefault();
-	// 	fetch("/add_free_dates", {
-	// 		method: "POST",
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data)
-	// 	})
-	// 		.then(response => {
-	// 			console.log("Response statuss:", response.status);
-	// 			if (!response.ok) {
-	// 				throw new Error(response.status);
-	// 			}
-	// 		})
-	// 		.catch(error => {
-	// 			console.log("Errors:", String(error.message));
-	// 			setError("Error: ", String(error.message));
-	// 		});
-	// };
-
 
 	return (
 		<>
@@ -53,7 +33,10 @@ export default function AddFreeDates() {
 						gap: 2,
 					}}
 					component="form"
-					onSubmit={(event) => HandlePost("/add_free_dates", data, event)}
+					onSubmit={(event) => {
+						HandlePost("/add_free_dates", data, event);
+						setMessage("Dates added.")
+					}}
 				>
 					<p style={{ textAlign: 'center', marginBottom: 20 }}>Add Free Dates</p>
 					<DateTimePicker
@@ -63,7 +46,10 @@ export default function AddFreeDates() {
 						value={today}
 						disablePast={true}
 						skipDisabled={true}
-						onChange={(newValue) => onTimeChange("start", newValue)} />
+						onChange={(newValue) => {
+							onTimeChange("start", newValue);
+							setMessage("")
+						}} />
 					<DateTimePicker
 						ampm={false}
 						label={"End"}
@@ -76,6 +62,7 @@ export default function AddFreeDates() {
 						{...(!data.start && { disabled: true })}
 						onChange={(newValue) => onTimeChange("end", newValue)} />
 					<Button variant="contained" type='submit' >Submit</Button>
+					<p>{message}</p>
 				</Box>
 			</LocalizationProvider>
 		</>);
