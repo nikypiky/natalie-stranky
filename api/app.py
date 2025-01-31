@@ -101,7 +101,9 @@ def get_reservations():
     foo, status_code = verify_session()
     if status_code != 250:
         return response, 404
-    data = run_sql("SELECT * FROM reservations ORDER BY time_of_reservation")
+    data = run_sql("""SELECT * FROM reservations
+                   ORDER BY time_of_reservation
+                   WHERE confirmation = true""")
     reservations = []
     for i in data:
         reservation = {}
@@ -187,10 +189,10 @@ def add_reservation_pending():
     verification_token = secrets.token_hex(16)
     start = datetime.strptime(
         user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
-    run_sql("""INSERT INTO pending_reservations
+    run_sql("""INSERT INTO reservations
             (name, email, phone, time_of_reservation,
-             type, duration, verification_token)
-            VALUES (?, ?, ?, ?, ?, ?, ?)""",
+             type, duration, verification_token, confirmation)
+            VALUES (?, ?, ?, ?, ?, ?, ?, false)""",
             (user_input["name"],
              user_input["email"],
              user_input["tel."],
@@ -222,14 +224,9 @@ def add_reservation_pending():
 def confirm_reservation():
     response = make_response()
     user_input = request.get_json()
-    run_sql("""INSERT INTO reservations
-            (name, email, phone, time_of_reservation, type, created_at)
-                SELECT name, email, phone, time_of_reservation, type, created_at
-                FROM pending_reservations
-                WHERE verification_token = (?)""",
-            (user_input, ))
-    run_sql(""" DELETE FROM pending_reservations
-            WHERE verification_token = (?);""",
+    run_sql("""UPDATE reservations
+            SET confirmation = true
+            WHERE verification_token = ?;""",
             (user_input, ))
     return response
 
