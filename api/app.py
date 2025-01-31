@@ -102,8 +102,9 @@ def get_reservations():
     if status_code != 250:
         return response, 404
     data = run_sql("""SELECT * FROM reservations
+                   WHERE confirmation = true
                    ORDER BY time_of_reservation
-                   WHERE confirmation = true""")
+                    ;""")
     reservations = []
     for i in data:
         reservation = {}
@@ -230,6 +231,7 @@ def confirm_reservation():
             (user_input, ))
     return response
 
+
 @app.route("/delete_reservation", methods=["POST"])
 def delete_reservation():
     response = make_response()
@@ -237,8 +239,6 @@ def delete_reservation():
     print(user_input)
     run_sql("DELETE FROM reservations WHERE id = ?", (user_input,))
     return response
-
-
 
 
 def clear_old_free_dates():
@@ -255,7 +255,10 @@ def move_old_reservations():
 
 
 def remind_pending_reservation():
-    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
+    email_pending_reservations = run_sql("""SELECT email, verification_token
+                                         FROM pending_reservations
+                                         WHERE date(created_at) = date('now', '-1 day')
+                                         AND confirmation = false;""")
     for email in email_pending_reservations:
         mail_message = Message(
             "Reservation Pending",  # Subject of the email
@@ -265,9 +268,15 @@ def remind_pending_reservation():
     # Set email body content
     mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{email[1]}, if you fail to do so your reservation will be canceled."
 
+
 def delete_pending_reservation():
-    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
-    run_sql("DELETE FROM pending_reservations WHERE date(created_at) <= date('now', '-2 day'); ")
+    email_pending_reservations = run_sql("""SELECT email, verification_token
+                                         FROM pending_reservations
+                                         WHERE date(created_at) = date('now', '-2 day')
+                                         AND confirmation = false;""")
+    run_sql("""DELETE FROM pending_reservations
+            WHERE date(created_at) <= date('now', '-2 day')
+            AND confirmation = false; """)
     for email in email_pending_reservations:
         mail_message = Message(
             "Reservation Canceled",  # Subject of the email
@@ -276,6 +285,7 @@ def delete_pending_reservation():
         )
     # Set email body content
     mail_message.body = f"Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+
 
 @scheduler.task('cron', id='cron_job', hour=19, minute=0)
 def job_function():
