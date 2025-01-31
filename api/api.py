@@ -187,10 +187,10 @@ def add_reservation_pending():
     verification_token = secrets.token_hex(16)
     start = datetime.strptime(
         user_input["date"] + user_input["start"], "%Y-%m-%d%H:%M")
-    run_sql("""INSERT INTO pending_reservations
+    run_sql("""INSERT INTO reservations
             (name, email, phone, time_of_reservation,
-             type, duration, verification_token)
-            VALUES (?, ?, ?, ?, ?, ?, ?)""",
+             type, duration, verification_token, confirmation)
+            VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)""",
             (user_input["name"],
              user_input["email"],
              user_input["tel."],
@@ -286,8 +286,10 @@ def job_function():
     move_old_reservations()
     remind_pending_reservation()
     delete_pending_reservation()
-
     print("Interval job executed!")
+
+
+
 # if __name__ == '__main__':
 #     app.run(debug=True)
 
