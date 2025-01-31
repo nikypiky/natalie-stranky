@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useState, useEffect } from 'react';
+import DeleteReservation from './DeleteReservation';
 
 
 export default function ReservationsTable() {
@@ -51,7 +52,7 @@ export default function ReservationsTable() {
 							<TableCell>{row.phone}</TableCell>
 							<TableCell>{row.time}</TableCell>
 							<TableCell>{row.type}</TableCell>
-							<TableCell>{row.notes}</TableCell>
+							<TableCell>{DeleteReservation(row.id)}</TableCell>
 						</TableRow>
 						))}
 					</TableBody>

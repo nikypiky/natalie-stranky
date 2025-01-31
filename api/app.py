@@ -165,7 +165,6 @@ def delete_free_dates():
 
 def delete_time_slots(start, length):
     end = start + timedelta(minutes=15*length)
-    print(end, start, length)
     run_sql("""DELETE FROM free_dates
                 WHERE datetime(free_slot) >= datetime(?)
                 AND datetime(free_slot) < datetime(?)""",
@@ -210,7 +209,7 @@ def add_reservation_pending():
 
     # Send the email
     try:
-        # mail.send(mail_message)
+        mail.send(mail_message)
         print("Mail has been sent")
     except Exception as e:
         print(f"Error sending email: {e}")
@@ -233,6 +232,16 @@ def confirm_reservation():
             WHERE verification_token = (?);""",
             (user_input, ))
     return response
+
+@app.route("/delete_reservation", methods=["POST"])
+def delete_reservation():
+    response = make_response()
+    user_input = request.get_json()
+    print(user_input)
+    run_sql("DELETE FROM reservations WHERE id = ?", (user_input,))
+    return response
+
+
 
 
 def clear_old_free_dates():
