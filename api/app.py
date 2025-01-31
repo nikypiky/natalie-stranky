@@ -101,7 +101,8 @@ def get_reservations():
     foo, status_code = verify_session()
     if status_code != 250:
         return response, 404
-    data = run_sql("""SELECT * FROM reservations
+    data = run_sql("""SELECT id, name, email, phone, time_of_reservation, type
+                   FROM reservations
                    WHERE confirmation = true
                    ORDER BY time_of_reservation
                     ;""")
@@ -114,7 +115,6 @@ def get_reservations():
         reservation["phone"] = i[3]
         reservation["time"] = i[4]
         reservation["type"] = i[5]
-        reservation["notes"] = i[6]
         reservations.append(reservation)
     return jsonify(reservations)
 
@@ -176,10 +176,11 @@ def delete_time_slots(start, length):
 
 
 def return_time_slots(start, length):
-    time_change = time_change = timedelta(minutes=15)
+    time_change = timedelta(minutes=15)
+    print(start, length)
     for i in range(length):
-        run_sql("INSERT INTO free_dates (free_slot) VALUES ?",
-                (start.strftime("%Y-%m-%d %H:%M")))
+        run_sql("INSERT INTO free_dates (free_slot) VALUES (?)",
+                (start.strftime("%Y-%m-%d %H:%M"), ))
         start = start + time_change
 
 
@@ -236,8 +237,10 @@ def confirm_reservation():
 def delete_reservation():
     response = make_response()
     user_input = request.get_json()
-    print(user_input)
+    timeslot_return_data = run_sql("""SELECT time_of_reservation, duration FROM reservations WHERE id = ?""", (user_input,))
+    print(timeslot_return_data[0][1])
     run_sql("DELETE FROM reservations WHERE id = ?", (user_input,))
+    return_time_slots(datetime.strptime(timeslot_return_data[0][0], "%Y-%m-%d %H:%M"), timeslot_return_data[0][1])
     return response
 
 
@@ -271,10 +274,10 @@ def remind_pending_reservation():
 
 def delete_pending_reservation():
     email_pending_reservations = run_sql("""SELECT email, verification_token
-                                         FROM pending_reservations
+                                         FROM reservations
                                          WHERE date(created_at) = date('now', '-2 day')
                                          AND confirmation = false;""")
-    run_sql("""DELETE FROM pending_reservations
+    run_sql("""DELETE FROM reservations
             WHERE date(created_at) <= date('now', '-2 day')
             AND confirmation = false; """)
     for email in email_pending_reservations:
