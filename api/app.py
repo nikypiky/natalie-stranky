@@ -237,9 +237,14 @@ def confirm_reservation():
 def delete_reservation():
     response = make_response()
     user_input = request.get_json()
-    timeslot_return_data = run_sql("""SELECT time_of_reservation, duration FROM reservations WHERE id = ?""", (user_input,))
+    timeslot_return_data = run_sql("""SELECT time_of_reservation, duration
+                                   FROM reservations
+                                   WHERE id = ?""",
+                                   (user_input,))
     print(timeslot_return_data[0][1])
-    run_sql("DELETE FROM reservations WHERE id = ?", (user_input,))
+    run_sql("""DELETE FROM reservations
+            WHERE id = ?""",
+            (user_input,))
     return_time_slots(datetime.strptime(timeslot_return_data[0][0], "%Y-%m-%d %H:%M"), timeslot_return_data[0][1])
     return response
 
@@ -273,7 +278,7 @@ def remind_pending_reservation():
 
 
 def delete_pending_reservation():
-    email_pending_reservations = run_sql("""SELECT email, verification_token
+    email_pending_reservations = run_sql("""SELECT email, verification_token, time_of_reservation, duration
                                          FROM reservations
                                          WHERE date(created_at) = date('now', '-2 day')
                                          AND confirmation = false;""")
@@ -287,7 +292,8 @@ def delete_pending_reservation():
             recipients=[email[0]]  # Email recipient
         )
     # Set email body content
-    mail_message.body = f"Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+    mail_message.body = "Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+    return_time_slots(datetime.strptime(email_pending_reservations[0][2], "%Y-%m-%d %H:%M"), email_pending_reservations[0][3])
 
 
 @scheduler.task('cron', id='cron_job', hour=19, minute=0)
