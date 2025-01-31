@@ -101,7 +101,11 @@ def get_reservations():
     foo, status_code = verify_session()
     if status_code != 250:
         return response, 404
-    data = run_sql("SELECT * FROM reservations ORDER BY time_of_reservation")
+    data = run_sql("""SELECT id, name, email, phone, time_of_reservation, type
+                   FROM reservations
+                   WHERE confirmation = true
+                   ORDER BY time_of_reservation
+                    ;""")
     reservations = []
     for i in data:
         reservation = {}
@@ -111,7 +115,6 @@ def get_reservations():
         reservation["phone"] = i[3]
         reservation["time"] = i[4]
         reservation["type"] = i[5]
-        reservation["notes"] = i[6]
         reservations.append(reservation)
     return jsonify(reservations)
 
@@ -173,10 +176,11 @@ def delete_time_slots(start, length):
 
 
 def return_time_slots(start, length):
-    time_change = time_change = timedelta(minutes=15)
+    time_change = timedelta(minutes=15)
+    print(start, length)
     for i in range(length):
-        run_sql("INSERT INTO free_dates (free_slot) VALUES ?",
-                (start.strftime("%Y-%m-%d %H:%M")))
+        run_sql("INSERT INTO free_dates (free_slot) VALUES (?)",
+                (start.strftime("%Y-%m-%d %H:%M"), ))
         start = start + time_change
 
 
@@ -190,7 +194,7 @@ def add_reservation_pending():
     run_sql("""INSERT INTO reservations
             (name, email, phone, time_of_reservation,
              type, duration, verification_token, confirmation)
-            VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)""",
+            VALUES (?, ?, ?, ?, ?, ?, ?, false)""",
             (user_input["name"],
              user_input["email"],
              user_input["tel."],
@@ -222,26 +226,27 @@ def add_reservation_pending():
 def confirm_reservation():
     response = make_response()
     user_input = request.get_json()
-    run_sql("""INSERT INTO reservations
-            (name, email, phone, time_of_reservation, type, created_at)
-                SELECT name, email, phone, time_of_reservation, type, created_at
-                FROM pending_reservations
-                WHERE verification_token = (?)""",
-            (user_input, ))
-    run_sql(""" DELETE FROM pending_reservations
-            WHERE verification_token = (?);""",
+    run_sql("""UPDATE reservations
+            SET confirmation = true
+            WHERE verification_token = ?;""",
             (user_input, ))
     return response
+
 
 @app.route("/delete_reservation", methods=["POST"])
 def delete_reservation():
     response = make_response()
     user_input = request.get_json()
-    print(user_input)
-    run_sql("DELETE FROM reservations WHERE id = ?", (user_input,))
+    timeslot_return_data = run_sql("""SELECT time_of_reservation, duration
+                                   FROM reservations
+                                   WHERE id = ?""",
+                                   (user_input,))
+    print(timeslot_return_data[0][1])
+    run_sql("""DELETE FROM reservations
+            WHERE id = ?""",
+            (user_input,))
+    return_time_slots(datetime.strptime(timeslot_return_data[0][0], "%Y-%m-%d %H:%M"), timeslot_return_data[0][1])
     return response
-
-
 
 
 def clear_old_free_dates():
@@ -258,7 +263,10 @@ def move_old_reservations():
 
 
 def remind_pending_reservation():
-    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
+    email_pending_reservations = run_sql("""SELECT email, verification_token
+                                         FROM pending_reservations
+                                         WHERE date(created_at) = date('now', '-1 day')
+                                         AND confirmation = false;""")
     for email in email_pending_reservations:
         mail_message = Message(
             "Reservation Pending",  # Subject of the email
@@ -268,9 +276,15 @@ def remind_pending_reservation():
     # Set email body content
     mail_message.body = f"Your reservation is pending. Please verify your reservation at the following url: http://localhost:3000/reservation_confirmation/{email[1]}, if you fail to do so your reservation will be canceled."
 
+
 def delete_pending_reservation():
-    email_pending_reservations = run_sql("SELECT email, verification_token FROM pending_reservations WHERE date(created_at) = date('now', '-1 day');")
-    run_sql("DELETE FROM pending_reservations WHERE date(created_at) <= date('now', '-2 day'); ")
+    email_pending_reservations = run_sql("""SELECT email, verification_token, time_of_reservation, duration
+                                         FROM reservations
+                                         WHERE date(created_at) = date('now', '-2 day')
+                                         AND confirmation = false;""")
+    run_sql("""DELETE FROM reservations
+            WHERE date(created_at) <= date('now', '-2 day')
+            AND confirmation = false; """)
     for email in email_pending_reservations:
         mail_message = Message(
             "Reservation Canceled",  # Subject of the email
@@ -278,7 +292,9 @@ def delete_pending_reservation():
             recipients=[email[0]]  # Email recipient
         )
     # Set email body content
-    mail_message.body = f"Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+    mail_message.body = "Since you have not confirmed your reservation we unfortunately had to cancel it - if you with to create a new one please do se at this link:."
+    return_time_slots(datetime.strptime(email_pending_reservations[0][2], "%Y-%m-%d %H:%M"), email_pending_reservations[0][3])
+
 
 @scheduler.task('cron', id='cron_job', hour=19, minute=0)
 def job_function():
@@ -286,10 +302,8 @@ def job_function():
     move_old_reservations()
     remind_pending_reservation()
     delete_pending_reservation()
+
     print("Interval job executed!")
-
-
-
 # if __name__ == '__main__':
 #     app.run(debug=True)
 
