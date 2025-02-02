@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# Hairdresser Reservation System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a web application for managing reservations at a hairdresser's salon, created using Flask for the backend and React for the frontend. The application allows clients to make reservations, verify their reservations via email, and view available time slots. It also includes an admin panel for managing reservations, time slots, and customer information.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Client Reservation Management**
+  - Clients can create reservations by selecting a date and time from available slots.
+  - Clients receive a verification email upon creating a reservation, containing a confirmation link.
+  - Clients can confirm or cancel their reservations via the frontend.
 
-### `npm start`
+- **Admin Panel**
+  - Admins can log in to manage reservations, view confirmed and pending reservations, and delete them if needed.
+  - Admins can add, view, or delete available time slots.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Session Management**
+  - Sessions are securely handled using cookies, allowing admins to stay logged in across different pages.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Email Notifications**
+  - Verification emails are sent when a reservation is made.
+  - Reminder emails are sent for pending reservations.
+  - Reservations not confirmed within two days are automatically deleted and notified via email.
 
-### `npm test`
+- **Database**
+  - SQLite is used for storing reservation data, including client information, reservations, free time slots, and past reservations.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Cron Jobs**
+  - Periodic tasks like clearing old free dates, moving old reservations to the past, and deleting unconfirmed reservations are automated using APScheduler.
 
-### `npm run build`
+## Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Backend:** Flask, SQLite
+- **Frontend:** React (Material-UI)
+- **Email Service:** Flask-Mail (Gmail SMTP)
+- **Scheduler:** APScheduler
+- **Session Management:** Cookies and Flask-Sessions
+- **Cross-Origin Resource Sharing (CORS):** Flask-CORS
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Setup Instructions
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository:
 
-### `npm run eject`
+    ```bash
+    git clone https://github.com/yourusername/hairdresser-reservation.git
+    cd hairdresser-reservation
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Install the required Python packages:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Set up environment variables:
+    - `MAIL_USERNAME` and `MAIL_PASSWORD` for Gmail (used for sending verification emails).
+    - Make sure the SMTP server is configured correctly in `app.config`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. Run the Flask backend:
 
-## Learn More
+    ```bash
+    python app.py
+    ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. The backend will run at `http://localhost:5000`. The frontend (React) should be set up separately and will interact with the API endpoints.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## API Endpoints
 
-### Code Splitting
+- **POST /login:** Logs in an admin user.
+- **POST /verify_session:** Verifies an admin session.
+- **GET /get_reservations:** Fetches confirmed reservations.
+- **POST /add_free_dates:** Adds available time slots.
+- **GET /get_free_dates:** Retrieves available time slots.
+- **POST /delete_free_dates:** Deletes a specific time slot.
+- **POST /add_reservation_pending:** Creates a new reservation (pending confirmation).
+- **POST /confirm_reservation:** Confirms a reservation.
+- **POST /delete_reservation:** Deletes a reservation.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Cron Jobs
 
-### Analyzing the Bundle Size
+- **clear_old_free_dates:** Deletes expired time slots from the database.
+- **move_old_reservations:** Moves old reservations to the past reservations table.
+- **remind_pending_reservation:** Sends reminders for pending reservations.
+- **delete_pending_reservation:** Deletes unconfirmed reservations older than 2 days.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Contributing
 
-### Making a Progressive Web App
+If you'd like to contribute, feel free to fork the repository and submit a pull request. Any feedback or suggestions are welcome!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## License
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

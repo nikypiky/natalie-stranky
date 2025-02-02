@@ -302,10 +302,4 @@ def job_function():
     move_old_reservations()
     remind_pending_reservation()
     delete_pending_reservation()
-
     print("Interval job executed!")
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-# INSER INTO past_reservations
