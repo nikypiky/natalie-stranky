@@ -1,7 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import FullWidthDropdownMenu from "./FullWidthDropdownMenu";
 import HeaderButton from "./HeaderButton";
 import { useMediaQuery } from "@mui/material";
+import HeaderName from "./HeaderName";
 
 export default function Header() {
   const isSmallScreen = useMediaQuery("(max-width:600px)");
@@ -23,14 +24,7 @@ export default function Header() {
       }}
     >
       {/* Title */}
-      <Typography
-        variant="h6"
-        sx={{
-          marginBottom: isSmallScreen ? 1 : 0,
-        }}
-      >
-        Naty The Stylist
-      </Typography>
+      <HeaderName/>
 
       {/* Buttons or Dropdown */}
       {isSmallScreen ? (

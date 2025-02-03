@@ -7,6 +7,28 @@
 	/* Prevents padding from affecting element size */
 }
 
+.header-name-container {
+    width: 100%;
+	font-size: 6vw;
+	padding: 20px
+}
+
+.header-name-top, .header-name-bottom {
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: E0E0E0;
+    width: 100%; /* Ensures both top and bottom span the entire width */
+    margin: 0; /* Removes default margin to ensure no extra space */
+}
+
+.header-name-top {
+    font-size: 100%; /* Larger font size for the top text */
+}
+
+.header-name-bottom {
+    font-size: 40%; /* Smaller font size for the bottom text */
+}
+
 html,
 body {
 	width: 100%;
@@ -46,12 +68,13 @@ body {
 .about-card {
 	position: relative;
 	z-index: 2;
+	opacity: 0.7;
 	/* Card appears above the background */
 	width: 100%;
 	max-width: 600px;
 	/* Reduced max-width for smaller screens */
 	background: #fff;
-	border: 2px solid #000;
+	/* border: 2px solid #000; */
 	text-align: center;
 	padding: 20px;
 	box-sizing: border-box;
@@ -70,6 +93,7 @@ body {
 .about-text {
 	font-size: 16px;
 	line-height: 1.6;
+	background-color: transparent;
 	color: #333;
 }
 
